@@ -3,22 +3,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Users, Mail, CreditCard, Calendar,
-  FileText, Zap, MessageSquare, BarChart3, Settings, HelpCircle,
+  FileText, Zap, MessageSquare, BarChart3, Settings,
+  HelpCircle, Database, KeyRound, HardDrive, Webhook, Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
-import { Badge } from "@/components/ui/badge";
 
 const navItems = [
-  { label: "Dashboard", href: "dashboard", icon: LayoutDashboard, active: true },
-  { label: "CRM", href: "crm", icon: Users, soon: true },
-  { label: "Email Marketing", href: "email", icon: Mail, soon: true },
-  { label: "Payments", href: "payments", icon: CreditCard, soon: true },
-  { label: "Calendar", href: "calendar", icon: Calendar, soon: true },
-  { label: "Pages", href: "pages", icon: FileText, soon: true },
-  { label: "Automations", href: "automations", icon: Zap, soon: true },
-  { label: "SMS", href: "sms", icon: MessageSquare, soon: true },
-  { label: "Analytics", href: "analytics", icon: BarChart3, soon: true },
+  { label: "Dashboard",    href: "dashboard",   icon: LayoutDashboard, active: true  },
+  { label: "Auth",         href: "auth",         icon: KeyRound,        active: true  },
+  { label: "Database",     href: "database",     icon: Database,        active: false },
+  { label: "CRM",          href: "crm",          icon: Users,           active: false },
+  { label: "Payments",     href: "payments",     icon: CreditCard,      active: false },
+  { label: "Email",        href: "email",        icon: Mail,            active: false },
+  { label: "SMS",          href: "sms",          icon: MessageSquare,   active: false },
+  { label: "Automations",  href: "automations",  icon: Zap,             active: false },
+  { label: "AI",           href: "ai",           icon: Bot,             active: false },
+  { label: "Storage",      href: "storage",      icon: HardDrive,       active: false },
+  { label: "Analytics",    href: "analytics",    icon: BarChart3,       active: false },
+  { label: "Webhooks",     href: "webhooks",     icon: Webhook,         active: false },
 ];
 
 interface SidebarProps {
@@ -30,61 +33,76 @@ export function Sidebar({ workspaceSlug }: SidebarProps) {
   const base = `/app/${workspaceSlug}`;
 
   return (
-    <aside className="flex flex-col w-64 min-h-screen bg-slate-900 text-slate-200 border-r border-slate-800 shrink-0">
-      <div className="p-4 border-b border-slate-800">
+    <aside className="flex flex-col w-[220px] min-h-screen shrink-0 border-r"
+      style={{ background: "var(--sidebar)", borderColor: "var(--sidebar-border)" }}>
+
+      {/* Workspace switcher */}
+      <div className="p-3 border-b" style={{ borderColor: "var(--sidebar-border)" }}>
         <WorkspaceSwitcher workspaceSlug={workspaceSlug} />
       </div>
 
-      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-        {navItems.map(({ label, href, icon: Icon, soon }) => {
+      {/* Nav items */}
+      <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
+        {navItems.map(({ label, href, icon: Icon, active }) => {
           const fullHref = `${base}/${href}`;
           const isActive = pathname === fullHref || pathname.startsWith(`${fullHref}/`);
+          const isDisabled = !active;
 
           return (
             <Link
               key={href}
-              href={soon ? "#" : fullHref}
+              href={isDisabled ? "#" : fullHref}
+              onClick={isDisabled ? (e) => e.preventDefault() : undefined}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                "group flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium transition-all duration-150",
                 isActive
-                  ? "bg-blue-600 text-white"
-                  : soon
-                  ? "text-slate-500 cursor-not-allowed hover:bg-transparent"
-                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  ? "text-white"
+                  : isDisabled
+                  ? "opacity-35 cursor-not-allowed"
+                  : "hover:text-white"
               )}
-              onClick={soon ? (e) => e.preventDefault() : undefined}
+              style={
+                isActive
+                  ? { background: "var(--obs-accent)", color: "#fff" }
+                  : { color: "var(--sidebar-foreground)" }
+              }
             >
-              <Icon size={18} />
+              <Icon size={15} className="shrink-0" />
               <span className="flex-1">{label}</span>
-              {soon && (
-                <Badge variant="outline" className="text-[10px] border-slate-700 text-slate-500 py-0">
+              {isDisabled && (
+                <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded"
+                  style={{ background: "var(--obs-elevated)", color: "var(--obs-muted)" }}>
                   Soon
-                </Badge>
+                </span>
               )}
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-3 border-t border-slate-800 space-y-0.5">
+      {/* Bottom */}
+      <div className="p-2 border-t space-y-0.5" style={{ borderColor: "var(--sidebar-border)" }}>
         <Link
           href={`${base}/settings`}
           className={cn(
-            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-            pathname.startsWith(`${base}/settings`)
-              ? "bg-blue-600 text-white"
-              : "text-slate-300 hover:bg-slate-800 hover:text-white"
+            "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium transition-all",
+            pathname.startsWith(`${base}/settings`) ? "text-white" : "hover:text-white"
           )}
+          style={
+            pathname.startsWith(`${base}/settings`)
+              ? { background: "var(--obs-accent)" }
+              : { color: "var(--sidebar-foreground)" }
+          }
         >
-          <Settings size={18} />
+          <Settings size={15} />
           Settings
         </Link>
-        <Link
-          href="#"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+        <Link href="#"
+          className="flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium transition-all hover:text-white"
+          style={{ color: "var(--sidebar-foreground)" }}
         >
-          <HelpCircle size={18} />
-          Help &amp; Support
+          <HelpCircle size={15} />
+          Help
         </Link>
       </div>
     </aside>

@@ -15,12 +15,16 @@ model User {
   name          String?
   avatarUrl     String?
   passwordHash  String?
+  isSuspended   Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts    Account[]
-  sessions    Session[]
-  memberships WorkspaceMember[]
+  accounts           Account[]
+  sessions           Session[]
+  memberships        WorkspaceMember[]
+  apiKeys            ApiKey[]
+  passwordResetTokens PasswordResetToken[]
+  mfaSetup           MfaSetup?
 }
 
 // ─── NEXTAUTH TABLES ─────────────────────────────────────
@@ -47,6 +51,8 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  userAgent    String?
+  ipAddress    String?
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -56,6 +62,47 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// ─── API KEYS ────────────────────────────────────────────
+model ApiKey {
+  id          String    @id @default(cuid())
+  workspaceId String
+  userId      String
+  name        String
+  keyHash     String    @unique
+  keyPrefix   String
+  scopes      String[]
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── PASSWORD RESET ──────────────────────────────────────
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── MFA ─────────────────────────────────────────────────
+model MfaSetup {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  secret      String
+  backupCodes String[]
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // ─── WORKSPACE (TENANT) ──────────────────────────────────
@@ -81,6 +128,7 @@ model Workspace {
   members   WorkspaceMember[]
   invites   WorkspaceInvite[]
   auditLogs AuditLog[]
+  apiKeys   ApiKey[]
 }
 
 model WorkspaceMember {

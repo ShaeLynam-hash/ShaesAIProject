@@ -9,21 +9,29 @@ interface TopbarProps {
 
 export function Topbar({ title, workspaceSlug }: TopbarProps) {
   return (
-    <header className="h-16 border-b border-slate-200 bg-white flex items-center px-6 gap-4 shrink-0">
-      <h1 className="text-lg font-semibold text-slate-900 flex-1">{title}</h1>
+    <header className="h-14 flex items-center px-5 gap-4 shrink-0 border-b"
+      style={{ background: "var(--obs-surface)", borderColor: "var(--obs-border)" }}>
+      <h1 className="text-sm font-semibold flex-1" style={{ color: "var(--obs-text)" }}>
+        {title}
+      </h1>
 
-      <div className="flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2 w-64">
-        <Search size={16} className="text-slate-400 shrink-0" />
+      <div className="flex items-center gap-2 rounded-lg px-3 py-1.5 w-56 border"
+        style={{ background: "var(--obs-elevated)", borderColor: "var(--obs-border)" }}>
+        <Search size={13} style={{ color: "var(--obs-muted)" }} className="shrink-0" />
         <input
           type="text"
-          placeholder="Search..."
-          className="bg-transparent text-sm text-slate-600 placeholder-slate-400 outline-none w-full"
+          placeholder="Search…"
+          className="bg-transparent text-xs outline-none w-full placeholder:opacity-50"
+          style={{ color: "var(--obs-text)" }}
         />
+        <kbd className="text-[10px] px-1 rounded border"
+          style={{ color: "var(--obs-muted)", borderColor: "var(--obs-border)" }}>⌘K</kbd>
       </div>
 
-      <button className="relative p-2 rounded-lg hover:bg-slate-100 transition-colors">
-        <Bell size={20} className="text-slate-600" />
-        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full" />
+      <button className="relative p-1.5 rounded-lg transition-colors hover:bg-white/5">
+        <Bell size={16} style={{ color: "var(--obs-muted)" }} />
+        <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full"
+          style={{ background: "var(--obs-accent)" }} />
       </button>
 
       <UserMenu workspaceSlug={workspaceSlug} />
