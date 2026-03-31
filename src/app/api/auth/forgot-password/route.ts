@@ -3,7 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { randomBytes } from "crypto";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
+}
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
@@ -23,7 +25,7 @@ export async function POST(req: NextRequest) {
 
   const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`;
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: process.env.EMAIL_FROM ?? "noreply@obsidian.dev",
     to: email,
     subject: "Reset your Obsidian password",
