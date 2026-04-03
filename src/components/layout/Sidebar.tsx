@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Users, Mail, CreditCard, Calendar,
   FileText, Zap, MessageSquare, BarChart3, Settings,
   HelpCircle, Database, KeyRound, HardDrive, Webhook, Bot,
-  Headphones, UserCheck, Receipt,
+  Headphones, UserCheck, Receipt, CalendarCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
@@ -26,6 +26,8 @@ const navItems = [
   { label: "HR",           href: "hr",           icon: UserCheck,       active: true  },
   { label: "Documents",    href: "documents",    icon: FileText,        active: true  },
   { label: "Calendar",     href: "calendar",     icon: Calendar,        active: true  },
+  { label: "Booking",      href: "booking",      icon: CalendarCheck,   active: true  },
+  { label: "Forms",        href: "forms",        icon: FileText,        active: true  },
   { label: "Webhooks",     href: "webhooks",     icon: Webhook,         active: true  },
 ];
 

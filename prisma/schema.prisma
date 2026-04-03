@@ -144,6 +144,10 @@ model Workspace {
   analyticsEvents AnalyticsEvent[]
   webhooks      WebhookEndpoint[]
   automations   Automation[]
+  services      Service[]
+  appointments  Appointment[]
+  forms         FormBuilder[]
+  clientPortalUsers ClientPortalUser[]
 }
 
 model WorkspaceMember {
@@ -475,6 +479,67 @@ model Automation {
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
 
+// ─── BOOKING ─────────────────────────────────────────────
+model Service {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  duration    Int
+  price       Float    @default(0)
+  color       String   @default("#6366F1")
+  active      Boolean  @default(true)
+  appointments Appointment[]
+  createdAt   DateTime @default(now())
+}
+
+model Appointment {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id])
+  clientName  String
+  clientEmail String
+  clientPhone String?
+  date        DateTime
+  status      AppointmentStatus @default(PENDING)
+  notes       String?
+  createdAt   DateTime @default(now())
+}
+
+// ─── FORMS ───────────────────────────────────────────────
+model FormBuilder {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name        String
+  fields      Json
+  submissions FormSubmission[]
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model FormSubmission {
+  id        String      @id @default(cuid())
+  formId    String
+  form      FormBuilder @relation(fields: [formId], references: [id], onDelete: Cascade)
+  data      Json
+  createdAt DateTime    @default(now())
+}
+
+model ClientPortalUser {
+  id           String   @id @default(cuid())
+  workspaceId  String
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name         String
+  email        String
+  passwordHash String?
+  createdAt    DateTime @default(now())
+  @@unique([workspaceId, email])
+}
+
 // ─── ENUMS ───────────────────────────────────────────────
 enum MemberRole {
   OWNER
@@ -503,4 +568,11 @@ enum InvoiceStatus {
   PAID
   OVERDUE
   VOID
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
 }
