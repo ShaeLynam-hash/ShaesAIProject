@@ -68,10 +68,10 @@ export default function OnboardingPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 text-slate-900">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">S</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "#F59E0B" }}>
+              <span className="text-black font-bold text-sm">L</span>
             </div>
-            <span className="font-bold text-xl">SaaS Platform</span>
+            <span className="font-bold text-xl">Luminary</span>
           </div>
         </div>
 

@@ -5,30 +5,32 @@ import {
   LayoutDashboard, Users, Mail, CreditCard, Calendar,
   FileText, Zap, MessageSquare, BarChart3, Settings,
   HelpCircle, Database, KeyRound, HardDrive, Webhook, Bot,
-  Headphones, UserCheck, Receipt, CalendarCheck,
+  Headphones, UserCheck, Receipt, CalendarCheck, Puzzle, BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 
 const navItems = [
-  { label: "Dashboard",    href: "dashboard",   icon: LayoutDashboard, active: true  },
-  { label: "Auth",         href: "auth",         icon: KeyRound,        active: true  },
-  { label: "Payments",     href: "payments",     icon: CreditCard,      active: true  },
+  { label: "Dashboard",    href: "dashboard",    icon: LayoutDashboard, active: true  },
+  { label: "Accounting",   href: "payments",     icon: Receipt,         active: true  },
   { label: "CRM",          href: "crm",          icon: Users,           active: true  },
-  { label: "Email",        href: "email",        icon: Mail,            active: true  },
-  { label: "SMS",          href: "sms",          icon: MessageSquare,   active: true  },
-  { label: "AI",           href: "ai",           icon: Bot,             active: true  },
-  { label: "Storage",      href: "storage",      icon: HardDrive,       active: true  },
-  { label: "Analytics",    href: "analytics",    icon: BarChart3,       active: true  },
-  { label: "Automations",  href: "automations",  icon: Zap,             active: true  },
-  { label: "Database",     href: "database",     icon: Database,        active: true  },
-  { label: "Support",      href: "support",      icon: Headphones,      active: true  },
-  { label: "HR",           href: "hr",           icon: UserCheck,       active: true  },
-  { label: "Documents",    href: "documents",    icon: FileText,        active: true  },
   { label: "Calendar",     href: "calendar",     icon: Calendar,        active: true  },
   { label: "Booking",      href: "booking",      icon: CalendarCheck,   active: true  },
+  { label: "Email",        href: "email",        icon: Mail,            active: true  },
+  { label: "SMS",          href: "sms",          icon: MessageSquare,   active: true  },
   { label: "Forms",        href: "forms",        icon: FileText,        active: true  },
+  { label: "Support",      href: "support",      icon: Headphones,      active: true  },
+  { label: "HR",           href: "hr",           icon: UserCheck,       active: true  },
+  { label: "Documents",    href: "documents",    icon: BookOpen,        active: true  },
+  { label: "Analytics",    href: "analytics",    icon: BarChart3,       active: true  },
+  { label: "Storage",      href: "storage",      icon: HardDrive,       active: true  },
+  { label: "Automations",  href: "automations",  icon: Zap,             active: true  },
+  { label: "AI",           href: "ai",           icon: Bot,             active: true  },
+  { label: "Clients",      href: "clients",      icon: UserCheck,       active: true  },
+  { label: "Integrations", href: "integrations", icon: Puzzle,          active: true  },
+  { label: "Auth",         href: "auth",         icon: KeyRound,        active: true  },
   { label: "Webhooks",     href: "webhooks",     icon: Webhook,         active: true  },
+  { label: "Database",     href: "database",     icon: Database,        active: true  },
 ];
 
 interface SidebarProps {

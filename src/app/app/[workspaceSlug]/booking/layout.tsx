@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useParams } from "next/navigation";
-import { LayoutDashboard, Package, CalendarCheck, Clock, Globe } from "lucide-react";
+import { LayoutDashboard, Package, CalendarCheck, Clock, Globe, Code2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -10,6 +10,7 @@ const tabs = [
   { label: "Appointments", href: "/appointments",  icon: CalendarCheck   },
   { label: "Availability", href: "/availability",  icon: Clock           },
   { label: "Public Page",  href: "/public-page",   icon: Globe           },
+  { label: "Embed Widget", href: "/embed",         icon: Code2           },
 ];
 
 export default function BookingLayout({ children }: { children: React.ReactNode }) {
