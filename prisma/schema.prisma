@@ -123,7 +123,7 @@ model Workspace {
   subscriptionStatus   SubscriptionStatus @default(TRIALING)
   trialEndsAt          DateTime?
   currentPeriodEnd     DateTime?
-  plan                 Plan               @default(STARTER)
+  plan                 Plan               @default(FREE)
 
   members       WorkspaceMember[]
   invites       WorkspaceInvite[]
@@ -549,9 +549,11 @@ enum MemberRole {
 }
 
 enum Plan {
+  FREE
   STARTER
   PRO
   AGENCY
+  ENTERPRISE
 }
 
 enum SubscriptionStatus {
