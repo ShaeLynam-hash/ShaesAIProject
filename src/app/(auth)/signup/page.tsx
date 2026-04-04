@@ -52,8 +52,9 @@ export default function SignupPage() {
       body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
     });
 
-    if (res.status === 409) { setError("An account with this email already exists"); setLoading(false); return; }
-    if (!res.ok) { setError("Something went wrong. Please try again."); setLoading(false); return; }
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 409) { setError("An account with this email already exists — try signing in instead."); setLoading(false); return; }
+    if (!res.ok) { setError(data.error ?? "Something went wrong. Please try again."); setLoading(false); return; }
 
     // Sign in
     const result = await signIn("credentials", {
