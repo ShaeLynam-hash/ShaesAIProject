@@ -3,13 +3,9 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
-import { signInSchema, type SignInInput } from "@/lib/validators/auth";
 
-const inputStyle = {
+const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "11px 14px",
   background: "rgba(255,255,255,0.04)",
@@ -19,32 +15,46 @@ const inputStyle = {
   fontSize: 14,
   outline: "none",
   fontFamily: "inherit",
-} as const;
+};
 
-const labelStyle = {
+const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: 12,
   fontWeight: 600,
   color: "#6B6B76",
   marginBottom: 6,
   letterSpacing: "0.02em",
-} as const;
+};
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get("callbackUrl") ?? "/onboarding";
   const [showPwd, setShowPwd] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignInInput>({
-    resolver: zodResolver(signInSchema),
-  });
+  function set(k: string, v: string) { setForm((f) => ({ ...f, [k]: v })); }
 
-  const onSubmit = async (data: SignInInput) => {
-    const result = await signIn("credentials", { email: data.email, password: data.password, redirect: false });
-    if (result?.error) toast.error("Invalid email or password");
-    else router.push(callbackUrl);
-  };
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const result = await signIn("credentials", {
+      email: form.email,
+      password: form.password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setError("Invalid email or password");
+      setLoading(false);
+    } else {
+      router.push(callbackUrl);
+    }
+  }
 
   return (
     <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: "36px 32px" }}>
@@ -55,6 +65,7 @@ function LoginForm() {
 
       {/* Google SSO */}
       <button
+        type="button"
         onClick={() => signIn("google", { callbackUrl })}
         style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 16px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 10, color: "#EDEDF0", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "inherit", marginBottom: 20 }}
       >
@@ -73,11 +84,23 @@ function LoginForm() {
         <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {error && (
+        <div style={{ padding: "10px 14px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10, fontSize: 13, color: "#fca5a5", marginBottom: 16 }}>
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div>
           <label style={labelStyle}>Email</label>
-          <input type="email" {...register("email")} placeholder="you@company.com" style={inputStyle} />
-          {errors.email && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>{errors.email.message}</p>}
+          <input
+            type="email"
+            value={form.email}
+            onChange={(e) => set("email", e.target.value)}
+            placeholder="you@company.com"
+            required
+            style={inputStyle}
+          />
         </div>
 
         <div>
@@ -86,18 +109,30 @@ function LoginForm() {
             <Link href="/forgot-password" style={{ fontSize: 12, color: "#F59E0B", textDecoration: "none", fontWeight: 500 }}>Forgot password?</Link>
           </div>
           <div style={{ position: "relative" }}>
-            <input type={showPwd ? "text" : "password"} {...register("password")} placeholder="••••••••" style={{ ...inputStyle, paddingRight: 44 }} />
-            <button type="button" onClick={() => setShowPwd(!showPwd)}
-              style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#5B5B66", display: "flex" }}>
+            <input
+              type={showPwd ? "text" : "password"}
+              value={form.password}
+              onChange={(e) => set("password", e.target.value)}
+              placeholder="••••••••"
+              required
+              style={{ ...inputStyle, paddingRight: 44 }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPwd(!showPwd)}
+              style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#5B5B66", display: "flex", padding: 0 }}
+            >
               {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
-          {errors.password && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>{errors.password.message}</p>}
         </div>
 
-        <button type="submit" disabled={isSubmitting}
-          style={{ width: "100%", padding: "13px", background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: isSubmitting ? "not-allowed" : "pointer", opacity: isSubmitting ? 0.7 : 1, fontFamily: "inherit", marginTop: 4 }}>
-          {isSubmitting ? "Signing in…" : "Sign In →"}
+        <button
+          type="submit"
+          disabled={loading}
+          style={{ width: "100%", padding: "13px", background: loading ? "rgba(245,158,11,0.5)" : "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit", marginTop: 4 }}
+        >
+          {loading ? "Signing in…" : "Sign In →"}
         </button>
       </form>
 

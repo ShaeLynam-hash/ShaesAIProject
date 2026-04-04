@@ -4,12 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Eye, EyeOff } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { signUpSchema, type SignUpInput } from "@/lib/validators/auth";
 
-const inputStyle = {
+const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "11px 14px",
   background: "rgba(255,255,255,0.04)",
@@ -19,40 +15,60 @@ const inputStyle = {
   fontSize: 14,
   outline: "none",
   fontFamily: "inherit",
-  transition: "border-color 0.2s",
-} as const;
+};
 
-const labelStyle = {
+const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: 12,
   fontWeight: 600,
   color: "#6B6B76",
   marginBottom: 6,
   letterSpacing: "0.02em",
-} as const;
+};
 
 export default function SignupPage() {
   const router = useRouter();
   const [showPwd, setShowPwd] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpInput>({
-    resolver: zodResolver(signUpSchema),
-  });
+  function set(k: string, v: string) { setForm((f) => ({ ...f, [k]: v })); }
 
-  const onSubmit = async (data: SignUpInput) => {
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    if (form.name.trim().length < 2) { setError("Name must be at least 2 characters"); return; }
+    if (!form.email.includes("@")) { setError("Enter a valid email address"); return; }
+    if (form.password.length < 8) { setError("Password must be at least 8 characters"); return; }
+
+    setLoading(true);
+
+    // Create account
     const res = await fetch("/api/onboarding", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: data.name, email: data.email, password: data.password }),
+      body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
     });
 
-    if (res.status === 409) { toast.error("An account with this email already exists"); return; }
-    if (!res.ok) { toast.error("Something went wrong. Please try again."); return; }
+    if (res.status === 409) { setError("An account with this email already exists"); setLoading(false); return; }
+    if (!res.ok) { setError("Something went wrong. Please try again."); setLoading(false); return; }
 
-    const result = await signIn("credentials", { email: data.email, password: data.password, redirect: false });
-    if (result?.error) { toast.error("Account created but sign-in failed. Please log in."); router.push("/login"); }
-    else router.push("/onboarding");
-  };
+    // Sign in
+    const result = await signIn("credentials", {
+      email: form.email,
+      password: form.password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setError("Account created! Please sign in.");
+      router.push("/login");
+    } else {
+      router.push("/onboarding");
+    }
+  }
 
   return (
     <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: "36px 32px" }}>
@@ -63,6 +79,7 @@ export default function SignupPage() {
 
       {/* Google SSO */}
       <button
+        type="button"
         onClick={() => signIn("google", { callbackUrl: "/onboarding" })}
         style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: "11px 16px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 10, color: "#EDEDF0", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "inherit", marginBottom: 20 }}
       >
@@ -81,45 +98,64 @@ export default function SignupPage() {
         <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {error && (
+        <div style={{ padding: "10px 14px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10, fontSize: 13, color: "#fca5a5", marginBottom: 16 }}>
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div>
           <label style={labelStyle}>Full Name</label>
-          <input {...register("name")} placeholder="Jane Smith" style={inputStyle} />
-          {errors.name && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>{errors.name.message}</p>}
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => set("name", e.target.value)}
+            placeholder="Jane Smith"
+            required
+            style={inputStyle}
+          />
         </div>
 
         <div>
           <label style={labelStyle}>Work Email</label>
-          <input type="email" {...register("email")} placeholder="jane@company.com" style={inputStyle} />
-          {errors.email && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>{errors.email.message}</p>}
+          <input
+            type="email"
+            value={form.email}
+            onChange={(e) => set("email", e.target.value)}
+            placeholder="jane@company.com"
+            required
+            style={inputStyle}
+          />
         </div>
 
         <div>
           <label style={labelStyle}>Password</label>
           <div style={{ position: "relative" }}>
-            <input type={showPwd ? "text" : "password"} {...register("password")} placeholder="Min. 8 characters" style={{ ...inputStyle, paddingRight: 44 }} />
-            <button type="button" onClick={() => setShowPwd(!showPwd)}
-              style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#5B5B66", display: "flex" }}>
+            <input
+              type={showPwd ? "text" : "password"}
+              value={form.password}
+              onChange={(e) => set("password", e.target.value)}
+              placeholder="Min. 8 characters"
+              required
+              style={{ ...inputStyle, paddingRight: 44 }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPwd(!showPwd)}
+              style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#5B5B66", display: "flex", padding: 0 }}
+            >
               {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
-          {errors.password && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>{errors.password.message}</p>}
         </div>
 
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-          <input type="checkbox" id="terms" {...register("terms")} style={{ marginTop: 2, accentColor: "#F59E0B" }} />
-          <label htmlFor="terms" style={{ fontSize: 13, color: "#5B5B66", lineHeight: 1.5 }}>
-            I agree to the{" "}
-            <Link href="#" style={{ color: "#F59E0B", textDecoration: "none" }}>Terms</Link>
-            {" "}and{" "}
-            <Link href="#" style={{ color: "#F59E0B", textDecoration: "none" }}>Privacy Policy</Link>
-          </label>
-        </div>
-        {errors.terms && <p style={{ fontSize: 12, color: "#ef4444", marginTop: -8 }}>{errors.terms.message}</p>}
-
-        <button type="submit" disabled={isSubmitting}
-          style={{ width: "100%", padding: "13px", background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: isSubmitting ? "not-allowed" : "pointer", opacity: isSubmitting ? 0.7 : 1, fontFamily: "inherit", marginTop: 4 }}>
-          {isSubmitting ? "Creating account…" : "Create Free Account →"}
+        <button
+          type="submit"
+          disabled={loading}
+          style={{ width: "100%", padding: "13px", background: loading ? "rgba(245,158,11,0.5)" : "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit", marginTop: 4 }}
+        >
+          {loading ? "Creating account…" : "Create Free Account →"}
         </button>
       </form>
 
