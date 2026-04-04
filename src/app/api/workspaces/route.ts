@@ -27,13 +27,20 @@ export async function POST(req: Request) {
     slug = `${slug}-${Date.now().toString(36)}`;
   }
 
-  // Create Stripe customer
   const user = await prisma.user.findUnique({ where: { id: session.user.id } });
-  const stripeCustomer = await stripe.customers.create({
-    email: user?.email ?? undefined,
-    name,
-    metadata: { userId: session.user.id },
-  });
+
+  // Create Stripe customer (non-fatal if it fails)
+  let stripeCustomerId: string | undefined;
+  try {
+    const stripeCustomer = await stripe.customers.create({
+      email: user?.email ?? undefined,
+      name,
+      metadata: { userId: session.user.id },
+    });
+    stripeCustomerId = stripeCustomer.id;
+  } catch (e) {
+    console.error("Stripe customer creation failed (non-fatal):", e);
+  }
 
   const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 
@@ -44,7 +51,7 @@ export async function POST(req: Request) {
       industry,
       timezone,
       website,
-      stripeCustomerId: stripeCustomer.id,
+      stripeCustomerId,
       trialEndsAt,
       members: {
         create: {
@@ -55,14 +62,18 @@ export async function POST(req: Request) {
     },
   });
 
-  // Send welcome email
+  // Send welcome email (non-fatal if it fails)
   if (user?.email) {
-    await resend.emails.send({
-      from: FROM_EMAIL,
-      to: user.email,
-      subject: `Welcome to ${APP_NAME} — let's get you set up`,
-      html: welcomeEmailHtml(user.name ?? "there", workspace.slug),
-    });
+    try {
+      await resend.emails.send({
+        from: FROM_EMAIL,
+        to: user.email,
+        subject: `Welcome to ${APP_NAME} — let's get you set up`,
+        html: welcomeEmailHtml(user.name ?? "there", workspace.slug),
+      });
+    } catch (e) {
+      console.error("Welcome email failed (non-fatal):", e);
+    }
   }
 
   return NextResponse.json({ workspace }, { status: 201 });
