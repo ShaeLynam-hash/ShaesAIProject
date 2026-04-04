@@ -7,9 +7,15 @@ import { createWorkspaceSchema } from "@/lib/validators/workspace";
 import { resend, FROM_EMAIL, APP_NAME } from "@/lib/resend";
 
 export async function POST(req: NextRequest) {
-  // Use getToken to read JWT directly from cookie — works reliably on Vercel
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  const userId = token?.id as string | undefined ?? token?.sub;
+  // NextAuth v5 uses "authjs.session-token" (prod: "__Secure-authjs.session-token")
+  const isSecure = req.url.startsWith("https");
+  const cookieName = isSecure ? "__Secure-authjs.session-token" : "authjs.session-token";
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+    cookieName,
+  });
+  const userId = (token?.id ?? token?.sub) as string | undefined;
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
