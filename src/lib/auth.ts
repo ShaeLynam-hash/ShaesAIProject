@@ -34,7 +34,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 }, // 30 days — stays logged in
+  session: { strategy: "jwt", maxAge: 400 * 24 * 60 * 60 }, // ~13 months (browser cookie max)
   pages: {
     signIn: "/login",
     error: "/login",
