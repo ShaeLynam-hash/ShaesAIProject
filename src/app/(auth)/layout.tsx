@@ -1,15 +1,34 @@
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <a href="/" className="inline-flex items-center gap-2 text-slate-900">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">S</span>
+    <div style={{
+      minHeight: "100vh",
+      background: "#070709",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "24px",
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        *, *::before, *::after { box-sizing: border-box; }
+      `}</style>
+
+      {/* Ambient glow */}
+      <div style={{ position: "fixed", top: -200, left: "30%", width: 600, height: 400, background: "rgba(245,158,11,0.04)", borderRadius: "50%", filter: "blur(120px)", pointerEvents: "none" }} />
+      <div style={{ position: "fixed", bottom: -100, right: "10%", width: 400, height: 300, background: "rgba(99,102,241,0.03)", borderRadius: "50%", filter: "blur(100px)", pointerEvents: "none" }} />
+
+      <div style={{ width: "100%", maxWidth: 440, position: "relative" }}>
+        {/* Logo */}
+        <div style={{ textAlign: "center", marginBottom: 36 }}>
+          <a href="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 36, height: 36, background: "linear-gradient(135deg, #F59E0B, #D97706)", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ color: "#0a0800", fontWeight: 900, fontSize: 16 }}>L</span>
             </div>
-            <span className="font-bold text-xl">SaaS Platform</span>
+            <span style={{ fontSize: 20, fontWeight: 800, color: "#EDEDF0", letterSpacing: "-0.02em" }}>Luminary</span>
           </a>
         </div>
+
         {children}
       </div>
     </div>

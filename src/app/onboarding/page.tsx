@@ -1,248 +1,311 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Building2, Palette, Users, CreditCard, CheckCircle } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { z } from "zod";
-import { createWorkspaceSchema, type CreateWorkspaceInput } from "@/lib/validators/workspace";
-
-type CreateWorkspaceFormInput = z.input<typeof createWorkspaceSchema>;
-import { slugify } from "@/lib/workspace";
+import { Building2, Palette, Users, CreditCard, CheckCircle, ArrowRight, Check } from "lucide-react";
 
 const STEPS = [
-  { id: 1, label: "Workspace", icon: Building2 },
-  { id: 2, label: "Personalize", icon: Palette },
-  { id: 3, label: "Team", icon: Users },
-  { id: 4, label: "Plan", icon: CreditCard },
-  { id: 5, label: "Done", icon: CheckCircle },
+  { id: 1, label: "Your Business", icon: Building2 },
+  { id: 2, label: "Personalize",   icon: Palette    },
+  { id: 3, label: "Team",          icon: Users      },
+  { id: 4, label: "Plan",          icon: CreditCard },
 ];
 
-const INDUSTRIES = ["Technology", "Healthcare", "Finance", "Retail", "Education", "Real Estate", "Marketing", "Legal", "Other"];
-const COMPANY_SIZES = ["Just me", "2–10", "11–50", "51–200", "201–1000", "1000+"];
-const TIMEZONES = ["America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles", "Europe/London", "Europe/Paris", "Asia/Tokyo", "Asia/Singapore"];
+const INDUSTRIES = ["Technology","Healthcare","Finance","Retail","Education","Real Estate","Marketing","Legal","Construction","Food & Beverage","Fitness","Beauty & Wellness","Other"];
+const TIMEZONES  = ["America/New_York","America/Chicago","America/Denver","America/Los_Angeles","America/Phoenix","Europe/London","Europe/Paris","Asia/Tokyo","Asia/Singapore","Australia/Sydney"];
+
+function slugify(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 48);
+}
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "11px 14px",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.09)",
+  borderRadius: 10,
+  color: "#EDEDF0",
+  fontSize: 14,
+  outline: "none",
+  fontFamily: "inherit",
+};
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontSize: 12,
+  fontWeight: 600,
+  color: "#6B6B76",
+  marginBottom: 6,
+  letterSpacing: "0.02em",
+};
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
   const [workspaceSlug, setWorkspaceSlug] = useState("");
   const [inviteEmails, setInviteEmails] = useState(["", ""]);
+  const [selectedPlan, setSelectedPlan] = useState("pro");
 
-  const { register, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm<CreateWorkspaceFormInput>({
-    resolver: zodResolver(createWorkspaceSchema),
-    defaultValues: { timezone: "America/New_York" },
+  const [form, setForm] = useState({
+    name: "", industry: "", timezone: "America/New_York", website: "",
   });
 
-  const watchName = watch("name", "") as string;
+  function set(key: string, value: string) {
+    setForm((f) => ({ ...f, [key]: value }));
+    if (key === "name") setWorkspaceSlug(slugify(value));
+  }
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const slug = slugify(e.target.value);
-    setWorkspaceSlug(slug);
-  };
-
-  const onSubmit = async (data: CreateWorkspaceFormInput) => {
+  async function submit() {
+    if (!form.name || form.name.length < 2) { toast.error("Enter your business name"); return; }
+    setSubmitting(true);
     const res = await fetch("/api/workspaces", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ name: form.name, industry: form.industry, timezone: form.timezone, website: form.website }),
     });
     if (!res.ok) {
       const err = await res.json();
       toast.error(err.error ?? "Failed to create workspace");
+      setSubmitting(false);
       return;
     }
     const { workspace } = await res.json();
     setWorkspaceSlug(workspace.slug);
     setStep(5);
-  };
+    setSubmitting(false);
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-lg">
+    <div style={{
+      minHeight: "100vh",
+      background: "#070709",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "32px 24px",
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+      color: "#EDEDF0",
+    }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap'); *, *::before, *::after { box-sizing: border-box; }`}</style>
+
+      {/* Ambient glow */}
+      <div style={{ position: "fixed", top: -200, left: "30%", width: 600, height: 400, background: "rgba(245,158,11,0.05)", borderRadius: "50%", filter: "blur(120px)", pointerEvents: "none" }} />
+
+      <div style={{ width: "100%", maxWidth: 520, position: "relative" }}>
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 text-slate-900">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "#F59E0B" }}>
-              <span className="text-black font-bold text-sm">L</span>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <a href="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 36, height: 36, background: "linear-gradient(135deg, #F59E0B, #D97706)", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ color: "#0a0800", fontWeight: 900, fontSize: 16 }}>L</span>
             </div>
-            <span className="font-bold text-xl">Luminary</span>
-          </div>
+            <span style={{ fontSize: 20, fontWeight: 800, color: "#EDEDF0", letterSpacing: "-0.02em" }}>Luminary</span>
+          </a>
         </div>
 
-        {/* Steps */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          {STEPS.map((s, i) => (
-            <div key={s.id} className="flex items-center gap-2">
-              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
-                step === s.id ? "bg-blue-600 text-white" :
-                step > s.id ? "bg-green-100 text-green-700" :
-                "bg-slate-200 text-slate-400"
-              }`}>
-                <s.icon size={12} />
-                {s.label}
-              </div>
-              {i < STEPS.length - 1 && <div className={`w-4 h-px ${step > s.id ? "bg-green-400" : "bg-slate-300"}`} />}
-            </div>
-          ))}
-        </div>
-
-        <Card className="border-slate-200 shadow-sm">
-          <CardContent className="p-6">
-            {/* Step 1: Create Workspace */}
-            {step === 1 && (
-              <div className="space-y-5">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">Create your workspace</h2>
-                  <p className="text-slate-500 text-sm mt-1">Your workspace is your team's home base.</p>
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Workspace Name *</Label>
-                  <Input {...register("name")} onChange={(e) => { register("name").onChange(e); handleNameChange(e); }} placeholder="Acme Inc." />
-                  {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
-                  {workspaceSlug && <p className="text-xs text-slate-400">URL: /app/<strong>{workspaceSlug}</strong>/dashboard</p>}
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Industry</Label>
-                  <Select onValueChange={(v) => setValue("industry", v as string)}>
-                    <SelectTrigger><SelectValue placeholder="Select industry" /></SelectTrigger>
-                    <SelectContent>
-                      {INDUSTRIES.map((i) => <SelectItem key={i} value={i}>{i}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Company Size</Label>
-                  <Select>
-                    <SelectTrigger><SelectValue placeholder="How big is your team?" /></SelectTrigger>
-                    <SelectContent>
-                      {COMPANY_SIZES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button onClick={() => { if (watchName?.length >= 2) setStep(2); else toast.error("Enter a workspace name"); }} className="w-full bg-blue-600 hover:bg-blue-700">
-                  Continue →
-                </Button>
-              </div>
-            )}
-
-            {/* Step 2: Personalize */}
-            {step === 2 && (
-              <div className="space-y-5">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">Personalize your workspace</h2>
-                  <p className="text-slate-500 text-sm mt-1">Add a few details to make it yours. All optional.</p>
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Website URL</Label>
-                  <Input {...register("website")} placeholder="https://yourcompany.com" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Timezone</Label>
-                  <Select defaultValue="America/New_York" onValueChange={(v) => setValue("timezone", v as string)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {TIMEZONES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep(1)} className="flex-1">← Back</Button>
-                  <Button onClick={() => setStep(3)} className="flex-1 bg-blue-600 hover:bg-blue-700">Continue →</Button>
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Invite Team */}
-            {step === 3 && (
-              <div className="space-y-5">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">Invite your team</h2>
-                  <p className="text-slate-500 text-sm mt-1">Optional — you can always do this later from Settings.</p>
-                </div>
-                {inviteEmails.map((email, i) => (
-                  <div key={i} className="space-y-1.5">
-                    <Label>Team Member {i + 1}</Label>
-                    <Input
-                      type="email"
-                      value={email}
-                      onChange={(e) => {
-                        const updated = [...inviteEmails];
-                        updated[i] = e.target.value;
-                        setInviteEmails(updated);
-                      }}
-                      placeholder="colleague@company.com"
-                    />
+        {/* Step indicators */}
+        {step < 5 && (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0, marginBottom: 36 }}>
+            {STEPS.map((s, i) => {
+              const done = step > s.id;
+              const active = step === s.id;
+              return (
+                <div key={s.id} style={{ display: "flex", alignItems: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{
+                      width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700,
+                      background: done ? "#F59E0B" : active ? "rgba(245,158,11,0.15)" : "rgba(255,255,255,0.05)",
+                      border: active ? "1.5px solid rgba(245,158,11,0.5)" : done ? "none" : "1.5px solid rgba(255,255,255,0.08)",
+                      color: done ? "#0a0800" : active ? "#F59E0B" : "#4B4B56",
+                    }}>
+                      {done ? <Check size={13} /> : s.id}
+                    </div>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: active ? "#EDEDF0" : done ? "#F59E0B" : "#3A3A42" }}>{s.label}</span>
                   </div>
-                ))}
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep(2)} className="flex-1">← Back</Button>
-                  <Button onClick={() => setStep(4)} className="flex-1 bg-blue-600 hover:bg-blue-700">Continue →</Button>
+                  {i < STEPS.length - 1 && (
+                    <div style={{ width: 32, height: 1, background: done ? "rgba(245,158,11,0.3)" : "rgba(255,255,255,0.06)", margin: "0 8px" }} />
+                  )}
                 </div>
-                <button onClick={() => setStep(4)} className="w-full text-center text-sm text-slate-400 hover:text-slate-600">
-                  Skip for now
+              );
+            })}
+          </div>
+        )}
+
+        {/* Card */}
+        <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: "36px 32px" }}>
+
+          {/* ── Step 1: Business Info ── */}
+          {step === 1 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div>
+                <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>Tell us about your business</h2>
+                <p style={{ fontSize: 14, color: "#5B5B66" }}>We'll use this to set up your workspace.</p>
+              </div>
+              <div>
+                <label style={labelStyle}>Business Name *</label>
+                <input value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Acme Inc." style={inputStyle} />
+                {workspaceSlug && <p style={{ fontSize: 12, color: "#3A3A42", marginTop: 5 }}>Your URL: <span style={{ color: "#F59E0B" }}>luminary.app/app/{workspaceSlug}</span></p>}
+              </div>
+              <div>
+                <label style={labelStyle}>Industry</label>
+                <select value={form.industry} onChange={(e) => set("industry", e.target.value)}
+                  style={{ ...inputStyle, cursor: "pointer" }}>
+                  <option value="" style={{ background: "#0F0F12" }}>Select industry</option>
+                  {INDUSTRIES.map((i) => <option key={i} value={i} style={{ background: "#0F0F12" }}>{i}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={labelStyle}>Timezone</label>
+                <select value={form.timezone} onChange={(e) => set("timezone", e.target.value)}
+                  style={{ ...inputStyle, cursor: "pointer" }}>
+                  {TIMEZONES.map((t) => <option key={t} value={t} style={{ background: "#0F0F12" }}>{t}</option>)}
+                </select>
+              </div>
+              <button onClick={() => { if (form.name.length >= 2) setStep(2); else toast.error("Enter your business name"); }}
+                style={{ width: "100%", padding: "13px", background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                Continue <ArrowRight size={16} />
+              </button>
+            </div>
+          )}
+
+          {/* ── Step 2: Personalize ── */}
+          {step === 2 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div>
+                <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>Personalize your workspace</h2>
+                <p style={{ fontSize: 14, color: "#5B5B66" }}>Optional — you can always change this later.</p>
+              </div>
+              <div>
+                <label style={labelStyle}>Website URL</label>
+                <input value={form.website} onChange={(e) => set("website", e.target.value)} placeholder="https://yourcompany.com" style={inputStyle} />
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button onClick={() => setStep(1)}
+                  style={{ flex: 1, padding: "12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "#EDEDF0", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                  ← Back
+                </button>
+                <button onClick={() => setStep(3)}
+                  style={{ flex: 2, padding: "12px", background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                  Continue <ArrowRight size={15} />
                 </button>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Step 4: Choose Plan */}
-            {step === 4 && (
-              <div className="space-y-5">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">Choose your plan</h2>
-                  <p className="text-slate-500 text-sm mt-1">Start free — upgrade anytime.</p>
+          {/* ── Step 3: Invite Team ── */}
+          {step === 3 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div>
+                <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>Invite your team</h2>
+                <p style={{ fontSize: 14, color: "#5B5B66" }}>Optional — they'll get an email invite.</p>
+              </div>
+              {inviteEmails.map((email, i) => (
+                <div key={i}>
+                  <label style={labelStyle}>Team Member {i + 1}</label>
+                  <input type="email" value={email} onChange={(e) => { const u = [...inviteEmails]; u[i] = e.target.value; setInviteEmails(u); }}
+                    placeholder="colleague@company.com" style={inputStyle} />
                 </div>
-                <div className="space-y-3">
-                  {[
-                    { name: "Starter", price: "$49/mo", desc: "Perfect for small teams", color: "border-slate-200" },
-                    { name: "Pro", price: "$99/mo", desc: "For growing businesses", color: "border-blue-500 bg-blue-50" },
-                    { name: "Agency", price: "$249/mo", desc: "For agencies & enterprises", color: "border-slate-200" },
-                  ].map((plan) => (
-                    <div key={plan.name} className={`border-2 ${plan.color} rounded-xl p-4 flex items-center justify-between cursor-pointer hover:border-blue-400 transition-colors`}>
-                      <div>
-                        <p className="font-semibold text-slate-900">{plan.name}</p>
-                        <p className="text-xs text-slate-500">{plan.desc}</p>
+              ))}
+              <div style={{ display: "flex", gap: 10 }}>
+                <button onClick={() => setStep(2)}
+                  style={{ flex: 1, padding: "12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "#EDEDF0", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                  ← Back
+                </button>
+                <button onClick={() => setStep(4)}
+                  style={{ flex: 2, padding: "12px", background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                  Continue <ArrowRight size={15} />
+                </button>
+              </div>
+              <button onClick={() => setStep(4)} style={{ background: "none", border: "none", color: "#3A3A42", fontSize: 13, cursor: "pointer", textAlign: "center", fontFamily: "inherit" }}>
+                Skip for now
+              </button>
+            </div>
+          )}
+
+          {/* ── Step 4: Choose Plan ── */}
+          {step === 4 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div>
+                <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>Choose your plan</h2>
+                <p style={{ fontSize: 14, color: "#5B5B66" }}>14-day free trial on all plans. No credit card needed.</p>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {[
+                  { key: "starter", name: "Starter", price: "$49/mo", desc: "For small businesses getting started", features: ["3 team members", "All core modules", "1,000 emails/mo"] },
+                  { key: "pro",     name: "Pro",     price: "$99/mo", desc: "For growing teams that need more",  features: ["10 team members", "All modules + AI", "10,000 emails/mo"], popular: true },
+                  { key: "agency",  name: "Agency",  price: "$249/mo",desc: "For agencies managing multiple clients", features: ["Unlimited members", "White-label", "Priority support"] },
+                ].map((plan) => (
+                  <div key={plan.key} onClick={() => setSelectedPlan(plan.key)}
+                    style={{
+                      padding: "16px 18px", borderRadius: 12, cursor: "pointer", transition: "all 0.2s",
+                      border: selectedPlan === plan.key ? "1.5px solid rgba(245,158,11,0.6)" : "1px solid rgba(255,255,255,0.07)",
+                      background: selectedPlan === plan.key ? "rgba(245,158,11,0.06)" : "rgba(255,255,255,0.02)",
+                      position: "relative",
+                    }}>
+                    {plan.popular && (
+                      <div style={{ position: "absolute", top: -10, right: 16, background: "linear-gradient(135deg, #F59E0B, #D97706)", color: "#0a0800", fontSize: 10, fontWeight: 800, padding: "2px 10px", borderRadius: 100, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                        Most Popular
                       </div>
-                      <span className="text-sm font-bold text-slate-900">{plan.price}</span>
+                    )}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <span style={{ fontSize: 15, fontWeight: 700 }}>{plan.name}</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#F59E0B" }}>{plan.price}</span>
+                        </div>
+                        <p style={{ fontSize: 12, color: "#5B5B66", marginTop: 2 }}>{plan.desc}</p>
+                      </div>
+                      <div style={{ width: 20, height: 20, borderRadius: "50%", border: selectedPlan === plan.key ? "none" : "1.5px solid rgba(255,255,255,0.15)", background: selectedPlan === plan.key ? "#F59E0B" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        {selectedPlan === plan.key && <Check size={11} color="#0a0800" strokeWidth={3} />}
+                      </div>
                     </div>
-                  ))}
-                </div>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-                  <Button type="submit" disabled={isSubmitting} className="w-full bg-blue-600 hover:bg-blue-700">
-                    {isSubmitting ? "Creating workspace…" : "Start Free Trial →"}
-                  </Button>
-                </form>
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep(3)} className="flex-1">← Back</Button>
-                </div>
+                    <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+                      {plan.features.map((f) => (
+                        <span key={f} style={{ fontSize: 11, color: "#3A3A42", fontWeight: 500 }}>✓ {f}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
+              <div style={{ display: "flex", gap: 10 }}>
+                <button onClick={() => setStep(3)}
+                  style={{ flex: 1, padding: "12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "#EDEDF0", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                  ← Back
+                </button>
+                <button onClick={submit} disabled={submitting}
+                  style={{ flex: 2, padding: "12px", background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.7 : 1, fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                  {submitting ? "Setting up…" : <><span>Start Free Trial</span> <ArrowRight size={15} /></>}
+                </button>
+              </div>
+            </div>
+          )}
 
-            {/* Step 5: Done */}
-            {step === 5 && (
-              <div className="text-center space-y-5 py-4">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                  <CheckCircle size={40} className="text-green-500" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-900">You're all set! 🎉</h2>
-                  <p className="text-slate-500 text-sm mt-2">Your workspace is ready. Let's get to work.</p>
-                </div>
-                <Button
-                  className="bg-blue-600 hover:bg-blue-700 px-8"
-                  onClick={() => router.push(`/app/${workspaceSlug}/dashboard`)}
-                >
-                  Go to Dashboard →
-                </Button>
+          {/* ── Step 5: Done ── */}
+          {step === 5 && (
+            <div style={{ textAlign: "center", padding: "16px 0" }}>
+              <div style={{ width: 72, height: 72, background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+                <CheckCircle size={36} color="#F59E0B" />
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <h2 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.02em", marginBottom: 10 }}>You're all set! 🎉</h2>
+              <p style={{ fontSize: 15, color: "#5B5B66", marginBottom: 32, lineHeight: 1.6 }}>
+                Your Luminary workspace is ready.<br />Everything your business needs is waiting for you.
+              </p>
+              <button onClick={() => router.push(`/app/${workspaceSlug}/dashboard`)}
+                style={{ padding: "14px 36px", background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 12, fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: "inherit", display: "inline-flex", alignItems: "center", gap: 10 }}>
+                Go to Dashboard <ArrowRight size={17} />
+              </button>
+              <p style={{ fontSize: 12, color: "#3A3A42", marginTop: 16 }}>
+                luminary.app/app/{workspaceSlug}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {step < 5 && (
+          <p style={{ textAlign: "center", fontSize: 12, color: "#2A2A32", marginTop: 20 }}>
+            Secured with 256-bit encryption · No credit card required
+          </p>
+        )}
       </div>
     </div>
   );
