@@ -23,9 +23,18 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div style={{ textAlign: "center", marginBottom: 36 }}>
           <a href="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 10 }}>
             <div style={{ width: 36, height: 36, background: "linear-gradient(135deg, #F59E0B, #D97706)", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "#0a0800", fontWeight: 900, fontSize: 16 }}>L</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 9C7.5 9 5 7 4.5 4C4 1.5 6 0.5 7.5 2C8.5 3 8 5.5 8.5 8" fill="#0a0800"/>
+                <path d="M16.5 9C16.5 9 19 7 19.5 4C20 1.5 18 0.5 16.5 2C15.5 3 16 5.5 15.5 8" fill="#0a0800"/>
+                <path d="M7.5 8.5C5.5 8.5 5 9.5 5 11V15.5C5 17.5 6.5 19.5 12 19.5C17.5 19.5 19 17.5 19 15.5V11C19 9.5 18.5 8.5 16.5 8.5H7.5Z" fill="#0a0800"/>
+                <ellipse cx="12" cy="17.5" rx="4.5" ry="3" fill="#0a0800"/>
+                <circle cx="10.2" cy="18" r="1.1" fill="#F59E0B" opacity="0.6"/>
+                <circle cx="13.8" cy="18" r="1.1" fill="#F59E0B" opacity="0.6"/>
+                <circle cx="9" cy="12.5" r="1.4" fill="#F59E0B" opacity="0.7"/>
+                <circle cx="15" cy="12.5" r="1.4" fill="#F59E0B" opacity="0.7"/>
+              </svg>
             </div>
-            <span style={{ fontSize: 20, fontWeight: 800, color: "#EDEDF0", letterSpacing: "-0.02em" }}>Luminary</span>
+            <span style={{ fontSize: 20, fontWeight: 800, color: "#EDEDF0", letterSpacing: "-0.02em" }}>Stactoro</span>
           </a>
         </div>
 

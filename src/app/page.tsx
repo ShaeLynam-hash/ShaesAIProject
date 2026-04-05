@@ -196,9 +196,18 @@ function LandingPage() {
         <nav style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 28, height: 28, background: "linear-gradient(135deg, #F59E0B, #D97706)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "#0a0800", fontWeight: 900, fontSize: 14 }}>L</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 9C7.5 9 5 7 4.5 4C4 1.5 6 0.5 7.5 2C8.5 3 8 5.5 8.5 8" fill="#0a0800"/>
+                <path d="M16.5 9C16.5 9 19 7 19.5 4C20 1.5 18 0.5 16.5 2C15.5 3 16 5.5 15.5 8" fill="#0a0800"/>
+                <path d="M7.5 8.5C5.5 8.5 5 9.5 5 11V15.5C5 17.5 6.5 19.5 12 19.5C17.5 19.5 19 17.5 19 15.5V11C19 9.5 18.5 8.5 16.5 8.5H7.5Z" fill="#0a0800"/>
+                <ellipse cx="12" cy="17.5" rx="4.5" ry="3" fill="#0a0800"/>
+                <circle cx="10.2" cy="18" r="1.1" fill="#F59E0B" opacity="0.6"/>
+                <circle cx="13.8" cy="18" r="1.1" fill="#F59E0B" opacity="0.6"/>
+                <circle cx="9" cy="12.5" r="1.4" fill="#F59E0B" opacity="0.7"/>
+                <circle cx="15" cy="12.5" r="1.4" fill="#F59E0B" opacity="0.7"/>
+              </svg>
             </div>
-            <span style={{ fontSize: 16, fontWeight: 700, color: "#EDEDF0", letterSpacing: "-0.02em" }}>Luminary</span>
+            <span style={{ fontSize: 16, fontWeight: 700, color: "#EDEDF0", letterSpacing: "-0.02em" }}>Stactoro</span>
           </Link>
 
           <div className="hide-mob" style={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -479,13 +488,13 @@ function LandingPage() {
           <div style={{ marginBottom: 56 }}>
             <span className="pill" style={{ marginBottom: 16, display: "inline-flex" }}>Reviews</span>
             <h2 style={{ fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 900, letterSpacing: "-0.03em", color: "#EDEDF0", marginTop: 16, lineHeight: 1.1 }}>
-              Businesses love Luminary
+              Businesses love Stactoro
             </h2>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16 }}>
             {[
-              { q: "Luminary replaced 6 different subscriptions for us. We save $400/month and everything is finally in one place.", name: "Sarah M.", role: "Boutique Owner", c: "#F59E0B" },
+              { q: "Stactoro replaced 6 different subscriptions for us. We save $400/month and everything is finally in one place.", name: "Sarah M.", role: "Boutique Owner", c: "#F59E0B" },
               { q: "The booking system alone is worth it. My clients love how easy it is to schedule. I never get double-booked anymore.", name: "James K.", role: "Personal Trainer", c: "#818CF8" },
               { q: "Finally, an all-in-one that actually works. Setup took 10 minutes and I was sending invoices the same day.", name: "Priya L.", role: "Consultant", c: "#22C55E" },
             ].map((t, i) => (
@@ -532,9 +541,18 @@ function LandingPage() {
         <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 24, height: 24, background: "linear-gradient(135deg, #F59E0B, #D97706)", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "#0a0800", fontWeight: 900, fontSize: 12 }}>L</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 9C7.5 9 5 7 4.5 4C4 1.5 6 0.5 7.5 2C8.5 3 8 5.5 8.5 8" fill="#0a0800"/>
+                <path d="M16.5 9C16.5 9 19 7 19.5 4C20 1.5 18 0.5 16.5 2C15.5 3 16 5.5 15.5 8" fill="#0a0800"/>
+                <path d="M7.5 8.5C5.5 8.5 5 9.5 5 11V15.5C5 17.5 6.5 19.5 12 19.5C17.5 19.5 19 17.5 19 15.5V11C19 9.5 18.5 8.5 16.5 8.5H7.5Z" fill="#0a0800"/>
+                <ellipse cx="12" cy="17.5" rx="4.5" ry="3" fill="#0a0800"/>
+                <circle cx="10.2" cy="18" r="1.1" fill="#F59E0B" opacity="0.6"/>
+                <circle cx="13.8" cy="18" r="1.1" fill="#F59E0B" opacity="0.6"/>
+                <circle cx="9" cy="12.5" r="1.4" fill="#F59E0B" opacity="0.7"/>
+                <circle cx="15" cy="12.5" r="1.4" fill="#F59E0B" opacity="0.7"/>
+              </svg>
             </div>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#EDEDF0" }}>Luminary</span>
+            <span style={{ fontSize: 15, fontWeight: 700, color: "#EDEDF0" }}>Stactoro</span>
             <span style={{ color: "#2A2A32", margin: "0 8px" }}>·</span>
             <span style={{ fontSize: 13, color: "#3A3A42" }}>The last platform you&apos;ll ever need.</span>
           </div>
@@ -544,7 +562,7 @@ function LandingPage() {
             <Link href="/login" style={{ color: "#3A3A42", fontSize: 13, textDecoration: "none" }}>Sign in</Link>
             <Link href="/signup" style={{ color: "#3A3A42", fontSize: 13, textDecoration: "none" }}>Sign up</Link>
           </div>
-          <p style={{ fontSize: 12, color: "#2A2A32" }}>© 2026 Luminary. All rights reserved.</p>
+          <p style={{ fontSize: 12, color: "#2A2A32" }}>© 2026 Stactoro. All rights reserved.</p>
         </div>
       </footer>
     </div>
