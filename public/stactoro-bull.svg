@@ -1,0 +1,108 @@
+<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bodyGrad" x1="0.2" y1="0" x2="0.8" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#C41E1E"/>
+      <stop offset="55%" stop-color="#8B1A1A"/>
+      <stop offset="100%" stop-color="#5C0E0E"/>
+    </linearGradient>
+    <linearGradient id="flameGrad" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#C84B0A"/>
+      <stop offset="55%" stop-color="#E06010"/>
+      <stop offset="100%" stop-color="#F5B30B"/>
+    </linearGradient>
+    <linearGradient id="hornGrad" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#A31515"/>
+      <stop offset="100%" stop-color="#6B0F0F"/>
+    </linearGradient>
+  </defs>
+
+  <!-- FLAME 1 — tallest, leftmost -->
+  <path d="M88,98 C83,80 78,58 80,38 C80,24 84,12 89,6
+           C91,16 89,32 91,48 C95,32 102,18 99,6
+           C105,20 100,40 102,56
+           C106,43 110,32 107,20
+           C113,34 108,54 106,70 Z"
+        fill="url(#flameGrad)"/>
+
+  <!-- FLAME 2 — medium, center-right -->
+  <path d="M110,94 C107,80 104,62 106,46 C106,33 110,22 114,16
+           C116,25 114,40 116,53
+           C120,41 125,30 122,18
+           C129,32 123,52 125,65 Z"
+        fill="#D97706" opacity="0.92"/>
+
+  <!-- FLAME 3 — shortest, far right -->
+  <path d="M128,90 C126,78 124,63 126,50 C126,38 129,28 133,22
+           C135,30 133,44 135,55
+           C139,44 143,34 140,24
+           C145,37 140,55 139,67 Z"
+        fill="#C84B0A" opacity="0.85"/>
+
+  <!-- LEFT HORN — large, sweeps up-left -->
+  <path d="M58,70 C46,55 30,43 16,40
+           C22,46 34,56 50,66 Z"
+        fill="url(#hornGrad)"/>
+  <path d="M54,68 C42,52 26,38 16,36
+           C19,40 24,45 31,51 C40,57 48,63 54,68Z"
+        fill="url(#hornGrad)"/>
+
+  <!-- RIGHT HORN — shorter, curves up and right -->
+  <path d="M88,63 C94,48 104,34 114,28
+           C110,38 104,52 94,63 Z"
+        fill="url(#hornGrad)"/>
+  <path d="M85,62 C91,46 102,30 112,24
+           C108,32 103,46 92,61Z"
+        fill="url(#hornGrad)"/>
+
+  <!-- BULL HEAD — angled oval, snout to lower-left, top at center -->
+  <path d="M36,72 C22,76 12,88 14,102
+           C16,118 30,130 48,134
+           C64,138 80,132 88,120
+           C96,108 94,92 82,82
+           C72,74 54,70 36,72Z"
+        fill="url(#bodyGrad)"/>
+
+  <!-- NECK / SHOULDER HUMP -->
+  <path d="M82,82 C95,74 112,70 124,78
+           C136,86 140,102 135,116
+           C130,128 117,134 102,134
+           L86,130
+           C80,122 78,110 82,100
+           C84,92 84,86 82,82Z"
+        fill="url(#bodyGrad)"/>
+
+  <!-- MAIN BODY MASS -->
+  <path d="M48,134 C40,140 36,152 40,164
+           C44,176 58,184 76,185
+           C94,186 112,180 122,168
+           C132,156 133,140 125,130
+           C117,120 104,116 94,120
+           C100,130 100,143 92,152
+           C84,159 72,161 60,155
+           C52,149 49,140 48,134Z"
+        fill="#8B1A1A"/>
+
+  <!-- HINDQUARTERS -->
+  <path d="M94,120 C108,112 126,112 136,122
+           C146,132 146,150 138,160
+           C130,168 116,174 104,172
+           C112,164 118,152 116,140
+           C114,128 104,122 94,120Z"
+        fill="#7B1515"/>
+
+  <!-- SNOUT / MUZZLE detail -->
+  <path d="M14,102 C10,108 10,116 14,120
+           C18,124 24,124 28,120
+           C22,116 18,110 18,102Z"
+        fill="#6B1111"/>
+
+  <!-- EYE -->
+  <circle cx="34" cy="98" r="7" fill="#F59E0B" opacity="0.9"/>
+  <circle cx="34" cy="98" r="4" fill="#0a0000"/>
+  <circle cx="32.5" cy="96.5" r="1.5" fill="white" opacity="0.45"/>
+
+  <!-- WHITE SPEED LINES — lower chest/throat, 3 arcs -->
+  <path d="M26,146 Q56,134 86,143" stroke="white" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M24,157 Q56,145 89,154" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M26,167 Q56,155 87,164" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+</svg>
