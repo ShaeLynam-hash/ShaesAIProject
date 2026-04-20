@@ -12,17 +12,17 @@ export default function EmbedPage({ params }: Props) {
   const bookingUrl = `${baseUrl}/book/${workspaceSlug}`;
 
   const snippets = {
-    button: `<!-- Luminary Booking Widget -->
+    button: `<!-- Stactoro Booking Widget -->
 <script>
   (function() {
     var btn = document.createElement('button');
     btn.textContent = 'Book Now';
     btn.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#F59E0B;color:#000;font-weight:700;padding:12px 24px;border-radius:999px;border:none;cursor:pointer;font-size:15px;box-shadow:0 4px 20px rgba(245,158,11,0.4);z-index:9999';
     btn.onclick = function() {
-      var iframe = document.getElementById('luminary-iframe');
+      var iframe = document.getElementById('stactoro-iframe');
       if (iframe) { iframe.style.display = iframe.style.display === 'none' ? 'flex' : 'none'; return; }
       var overlay = document.createElement('div');
-      overlay.id = 'luminary-iframe';
+      overlay.id = 'stactoro-iframe';
       overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99998;display:flex;align-items:center;justify-content:center;padding:20px';
       var frame = document.createElement('iframe');
       frame.src = '${bookingUrl}';

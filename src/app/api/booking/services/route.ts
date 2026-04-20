@@ -16,12 +16,27 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const { workspaceSlug, name, description, duration, price, color } = await req.json();
+  const {
+    workspaceSlug, name, description, duration, price, color,
+    meetingType, meetingLink, availableDays, startTime, endTime,
+  } = await req.json();
   if (!workspaceSlug || !name || !duration) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   const workspace = await prisma.workspace.findUnique({ where: { slug: workspaceSlug } });
   if (!workspace) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const service = await prisma.service.create({
-    data: { workspaceId: workspace.id, name, description: description || null, duration: Number(duration), price: price ?? 0, color: color ?? "#6366F1" },
+    data: {
+      workspaceId: workspace.id,
+      name,
+      description: description || null,
+      duration: Number(duration),
+      price: price ?? 0,
+      color: color ?? "#6366F1",
+      meetingType: meetingType ?? "in_person",
+      meetingLink: meetingLink || null,
+      availableDays: availableDays ?? ["MON","TUE","WED","THU","FRI"],
+      startTime: startTime ?? "09:00",
+      endTime: endTime ?? "17:00",
+    },
   });
   return NextResponse.json({ service }, { status: 201 });
 }

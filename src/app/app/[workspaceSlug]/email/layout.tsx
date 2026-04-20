@@ -1,13 +1,15 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useParams } from "next/navigation";
-import { LayoutDashboard, Send, FileText } from "lucide-react";
+import { LayoutDashboard, Send, FileText, GitBranch, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
   { label: "Overview",   href: "",            icon: LayoutDashboard },
   { label: "Campaigns",  href: "/campaigns",  icon: Send            },
+  { label: "Sequences",  href: "/sequences",  icon: GitBranch       },
   { label: "Templates",  href: "/templates",  icon: FileText        },
+  { label: "Builder",    href: "/builder",    icon: Layers          },
 ];
 
 export default function EmailLayout({ children }: { children: React.ReactNode }) {

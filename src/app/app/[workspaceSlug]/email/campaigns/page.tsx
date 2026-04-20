@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Plus, Send, Trash2 } from "lucide-react";
+import { Plus, Send, Trash2, Loader2 } from "lucide-react";
 
 interface Campaign { id: string; name: string; subject: string; status: string; recipientCount: number; openCount: number; clickCount: number; sentAt: string | null; createdAt: string; }
 
@@ -19,6 +19,7 @@ export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [sendingId, setSendingId] = useState<string | null>(null);
 
   const fetchCampaigns = useCallback(async () => {
     const res = await fetch(`/api/email/campaigns?workspace=${workspaceSlug}`);
@@ -27,6 +28,25 @@ export default function CampaignsPage() {
   }, [workspaceSlug]);
 
   useEffect(() => { fetchCampaigns(); }, [fetchCampaigns]);
+
+  const handleSend = async (id: string) => {
+    if (!confirm("Send this campaign to all contacts with email addresses?")) return;
+    setSendingId(id);
+    const res = await fetch(`/api/email/campaigns/${id}/send`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ workspaceSlug, segment: "all" }),
+    });
+    if (res.ok) {
+      const { sent, failed } = await res.json();
+      toast.success(`Sent to ${sent} contacts${failed > 0 ? `, ${failed} failed` : ""}`);
+      fetchCampaigns();
+    } else {
+      const err = await res.json();
+      toast.error(err.error ?? "Failed to send");
+    }
+    setSendingId(null);
+  };
 
   const handleDelete = async (id: string) => {
     setDeletingId(id);
@@ -48,8 +68,8 @@ export default function CampaignsPage() {
       </div>
 
       <div className="rounded-xl border overflow-hidden" style={{ background: "var(--obs-surface)", borderColor: "var(--obs-border)" }}>
-        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_40px] gap-4 px-5 py-3 border-b text-xs font-semibold uppercase tracking-wider" style={{ borderColor: "var(--obs-border)", color: "var(--obs-muted)" }}>
-          <span>Campaign</span><span>Status</span><span>Sent</span><span>Opens</span><span>Clicks</span><span />
+        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_80px_40px] gap-4 px-5 py-3 border-b text-xs font-semibold uppercase tracking-wider" style={{ borderColor: "var(--obs-border)", color: "var(--obs-muted)" }}>
+          <span>Campaign</span><span>Status</span><span>Sent</span><span>Opens</span><span>Clicks</span><span /><span />
         </div>
         {loading ? <div className="py-12 text-center text-sm" style={{ color: "var(--obs-muted)" }}>Loading…</div>
         : campaigns.length === 0 ? (
@@ -63,7 +83,7 @@ export default function CampaignsPage() {
           const openRate = c.recipientCount > 0 ? ((c.openCount / c.recipientCount) * 100).toFixed(1) : "—";
           const clickRate = c.recipientCount > 0 ? ((c.clickCount / c.recipientCount) * 100).toFixed(1) : "—";
           return (
-            <div key={c.id} className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_40px] gap-4 px-5 py-4 border-b items-center last:border-0" style={{ borderColor: "var(--obs-border)" }}>
+            <div key={c.id} className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_80px_40px] gap-4 px-5 py-4 border-b items-center last:border-0" style={{ borderColor: "var(--obs-border)" }}>
               <div>
                 <p className="text-sm font-medium" style={{ color: "var(--obs-text)" }}>{c.name}</p>
                 <p className="text-xs" style={{ color: "var(--obs-muted)" }}>{c.subject}</p>
@@ -72,6 +92,14 @@ export default function CampaignsPage() {
               <p className="text-sm" style={{ color: "var(--obs-text)" }}>{c.recipientCount.toLocaleString()}</p>
               <p className="text-sm" style={{ color: "var(--obs-text)" }}>{openRate}{c.recipientCount > 0 ? "%" : ""}</p>
               <p className="text-sm" style={{ color: "var(--obs-text)" }}>{clickRate}{c.recipientCount > 0 ? "%" : ""}</p>
+              {c.status !== "SENT" ? (
+                <button onClick={() => handleSend(c.id)} disabled={sendingId === c.id}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white disabled:opacity-50"
+                  style={{ background: "var(--obs-accent)" }}>
+                  {sendingId === c.id ? <Loader2 size={11} className="animate-spin" /> : <Send size={11} />}
+                  Send
+                </button>
+              ) : <div />}
               <button onClick={() => handleDelete(c.id)} disabled={deletingId === c.id} className="flex items-center justify-center p-1.5 rounded-lg hover:bg-red-500/10 disabled:opacity-50">
                 <Trash2 size={14} style={{ color: "var(--obs-danger)" }} />
               </button>

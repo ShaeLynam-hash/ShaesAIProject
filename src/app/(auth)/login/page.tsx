@@ -29,7 +29,7 @@ const labelStyle: React.CSSProperties = {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get("callbackUrl") ?? "/onboarding";
+  const callbackUrl = searchParams?.get("callbackUrl") ?? "/app";
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -60,7 +60,7 @@ function LoginForm() {
     <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: "36px 32px" }}>
       <div style={{ marginBottom: 28 }}>
         <h1 style={{ fontSize: 24, fontWeight: 800, color: "#EDEDF0", letterSpacing: "-0.02em", marginBottom: 6 }}>Welcome back</h1>
-        <p style={{ fontSize: 14, color: "#5B5B66" }}>Sign in to your Luminary account</p>
+        <p style={{ fontSize: 14, color: "#5B5B66" }}>Sign in to your Stactoro account</p>
       </div>
 
       {/* Google SSO */}

@@ -23,7 +23,7 @@ export async function GET(
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    `PRODID:-//Luminary//${workspace.name}//EN`,
+    `PRODID:-//Stactoro//${workspace.name}//EN`,
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     `X-WR-CALNAME:${workspace.name} Appointments`,
@@ -35,7 +35,7 @@ export async function GET(
     const end = new Date(start.getTime() + apt.service.duration * 60_000);
     lines.push(
       "BEGIN:VEVENT",
-      `UID:${apt.id}@luminary`,
+      `UID:${apt.id}@stactoro`,
       `DTSTART:${fmtIcalDate(start)}`,
       `DTEND:${fmtIcalDate(end)}`,
       `SUMMARY:${apt.service.name} — ${apt.clientName}`,

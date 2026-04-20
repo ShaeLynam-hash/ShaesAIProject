@@ -149,6 +149,65 @@ model Workspace {
   appointments  Appointment[]
   forms         FormBuilder[]
   clientPortalUsers ClientPortalUser[]
+  chartAccounts  ChartAccount[]
+  journalEntries JournalEntry[]
+  conversations  Conversation[]
+  // Communication settings (workspace-level override)
+  twilioAccountSid  String?
+  twilioAuthToken   String?
+  twilioFromNumber  String?
+  resendApiKey      String?
+  fromEmail         String?
+  fromName          String?
+  // Twilio sub-account (platform-managed — one per workspace)
+  twilioSubAccountSid   String?
+  twilioSubAccountToken String?
+  twilioPhoneNumber     String?
+  twilioPhoneNumberSid  String?
+  // SMS usage tracking
+  smsUsageThisMonth Int      @default(0)
+  smsUsageResetAt   DateTime?
+  smsMonthlyLimit   Int      @default(100)
+  // Missed call text-back
+  missedCallTextBack Boolean @default(false)
+  missedCallMessage  String?
+  // AI auto-reply to inbound SMS
+  aiAutoReply        Boolean @default(false)
+  aiAutoReplyPrompt  String?
+
+  emailSequences     EmailSequence[]
+  sequenceEnrollments SequenceEnrollment[]
+  proposals          Proposal[]
+  landingPages       LandingPage[]
+  chatWidget         ChatWidget?
+  socialPosts        SocialPost[]
+  projects           Project[]
+
+  // Agency / White-label
+  isAgency           Boolean  @default(false)
+  wlBrandName        String?
+  wlLogoUrl          String?
+  wlPrimaryColor     String?
+  wlSupportEmail     String?
+  wlCustomDomain     String?
+  wlHideAttribution  Boolean  @default(false)
+
+  // Agency owns these client workspaces
+  agencyClients      AgencyClient[] @relation("AgencyWorkspace")
+  // This workspace is managed by an agency
+  agencyOf           AgencyClient[] @relation("ClientWorkspace")
+}
+
+model AgencyClient {
+  id               String    @id @default(cuid())
+  agencyWorkspaceId String
+  clientWorkspaceId String
+  createdAt        DateTime  @default(now())
+
+  agencyWorkspace  Workspace @relation("AgencyWorkspace", fields: [agencyWorkspaceId], references: [id], onDelete: Cascade)
+  clientWorkspace  Workspace @relation("ClientWorkspace", fields: [clientWorkspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([agencyWorkspaceId, clientWorkspaceId])
 }
 
 model WorkspaceMember {
@@ -296,11 +355,25 @@ model Contact {
   source      String?
   tags        String[]
   notes       String?
+  leadScore   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  deals     Deal[]
+  workspace           Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  deals               Deal[]
+  conversations       Conversation[]
+  contactNotes        ContactNote[]
+  sequenceEnrollments SequenceEnrollment[]
+  proposals           Proposal[]
+  projects            Project[]
+}
+
+model ContactNote {
+  id          String   @id @default(cuid())
+  contactId   String
+  contact     Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  body        String
+  createdAt   DateTime @default(now())
 }
 
 model Deal {
@@ -482,32 +555,40 @@ model Automation {
 
 // ─── BOOKING ─────────────────────────────────────────────
 model Service {
-  id          String   @id @default(cuid())
-  workspaceId String
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  name        String
-  description String?
-  duration    Int
-  price       Float    @default(0)
-  color       String   @default("#6366F1")
-  active      Boolean  @default(true)
-  appointments Appointment[]
-  createdAt   DateTime @default(now())
+  id             String   @id @default(cuid())
+  workspaceId    String
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  duration       Int
+  price          Float    @default(0)
+  color          String   @default("#6366F1")
+  active         Boolean  @default(true)
+  // Meeting type: in_person | phone | zoom | google_meet | custom
+  meetingType    String   @default("in_person")
+  meetingLink    String?  // Zoom/Meet link for this service
+  // Availability
+  availableDays  String[] @default(["MON","TUE","WED","THU","FRI"])
+  startTime      String   @default("09:00")
+  endTime        String   @default("17:00")
+  appointments   Appointment[]
+  createdAt      DateTime @default(now())
 }
 
 model Appointment {
-  id          String   @id @default(cuid())
-  workspaceId String
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  serviceId   String
-  service     Service  @relation(fields: [serviceId], references: [id])
-  clientName  String
-  clientEmail String
-  clientPhone String?
-  date        DateTime
-  status      AppointmentStatus @default(PENDING)
-  notes       String?
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  workspaceId  String
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  serviceId    String
+  service      Service  @relation(fields: [serviceId], references: [id])
+  clientName   String
+  clientEmail  String
+  clientPhone  String?
+  date         DateTime
+  status       AppointmentStatus @default(PENDING)
+  notes        String?
+  meetingLink  String?  // Resolved meeting link for this specific appointment
+  createdAt    DateTime @default(now())
 }
 
 // ─── FORMS ───────────────────────────────────────────────
@@ -539,6 +620,265 @@ model ClientPortalUser {
   passwordHash String?
   createdAt    DateTime @default(now())
   @@unique([workspaceId, email])
+}
+
+// ─── INBOX / CONVERSATIONS ───────────────────────────────
+model Conversation {
+  id            String    @id @default(cuid())
+  workspaceId   String
+  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contactId     String?
+  contact       Contact?  @relation(fields: [contactId], references: [id])
+  channel       String    // "sms" | "email"
+  subject       String?
+  contactPhone  String?
+  contactEmail  String?
+  contactName   String?
+  lastMessageAt DateTime?
+  createdAt     DateTime  @default(now())
+
+  messages ConversationMessage[]
+}
+
+model ConversationMessage {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  direction      String       // "outbound" | "inbound"
+  body           String
+  status         String       @default("sent") // "queued" | "sent" | "delivered" | "failed" | "received"
+  externalId     String?
+  createdAt      DateTime     @default(now())
+}
+
+// ─── CHART OF ACCOUNTS / GENERAL LEDGER ─────────────────
+model ChartAccount {
+  id          String      @id @default(cuid())
+  workspaceId String
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  code        String      // e.g. "1000", "4100"
+  name        String      // e.g. "Cash", "Service Revenue"
+  type        AccountType // ASSET | LIABILITY | EQUITY | REVENUE | EXPENSE
+  subtype     String?     // e.g. "Current Asset", "Operating Expense"
+  description String?
+  isSystem    Boolean     @default(false)
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+
+  journalLines JournalLine[]
+
+  @@unique([workspaceId, code])
+}
+
+model JournalEntry {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  date        DateTime
+  memo        String?
+  reference   String?
+  sourceType  String?   // "invoice" | "expense" | "manual"
+  sourceId    String?
+  createdAt   DateTime  @default(now())
+
+  lines JournalLine[]
+}
+
+model JournalLine {
+  id             String       @id @default(cuid())
+  journalEntryId String
+  journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  accountId      String
+  account        ChartAccount @relation(fields: [accountId], references: [id])
+  debit          Float        @default(0)
+  credit         Float        @default(0)
+  memo           String?
+}
+
+// ─── EMAIL SEQUENCES (DRIP CAMPAIGNS) ────────────────────
+model EmailSequence {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  trigger     String   @default("manual") // manual | contact.created | tag.added | deal.stage_changed
+  triggerValue String? // e.g. tag name or deal stage
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  steps       EmailSequenceStep[]
+  enrollments SequenceEnrollment[]
+}
+
+model EmailSequenceStep {
+  id         String        @id @default(cuid())
+  sequenceId String
+  sequence   EmailSequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  stepNumber Int
+  delayDays  Int           @default(0)  // days after previous step (or enrollment for step 1)
+  subject    String
+  body       String        // HTML/text body
+  fromName   String?
+  fromEmail  String?
+  createdAt  DateTime      @default(now())
+}
+
+model SequenceEnrollment {
+  id          String        @id @default(cuid())
+  sequenceId  String
+  sequence    EmailSequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  workspaceId String
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contactId   String
+  contact     Contact       @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  currentStep Int           @default(0)
+  status      String        @default("ACTIVE") // ACTIVE | COMPLETED | PAUSED | UNSUBSCRIBED
+  nextSendAt  DateTime?
+  enrolledAt  DateTime      @default(now())
+  completedAt DateTime?
+
+  @@unique([sequenceId, contactId])
+}
+
+// ─── LANDING PAGES ───────────────────────────────────────
+model LandingPage {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name        String
+  slug        String
+  published   Boolean   @default(false)
+  blocks      Json      @default("[]")
+  seoTitle    String?
+  seoDesc     String?
+  customCss   String?
+  viewCount   Int       @default(0)
+  leadCount   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([workspaceId, slug])
+}
+
+// ─── LIVE CHAT ───────────────────────────────────────────
+model ChatWidget {
+  id             String   @id @default(cuid())
+  workspaceId    String   @unique
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  enabled        Boolean  @default(true)
+  widgetColor    String   @default("#F59E0B")
+  welcomeMessage String   @default("Hi! How can we help you today?")
+  teamName       String   @default("Support")
+  teamAvatar     String?
+  aiEnabled      Boolean  @default(false)
+  aiPrompt       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  conversations  ChatConversation[]
+}
+
+model ChatConversation {
+  id            String     @id @default(cuid())
+  widgetId      String
+  widget        ChatWidget @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+  visitorId     String
+  visitorName   String?
+  visitorEmail  String?
+  status        String     @default("OPEN")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  messages      ChatMessage[]
+
+  @@index([widgetId])
+  @@index([visitorId])
+}
+
+model ChatMessage {
+  id             String           @id @default(cuid())
+  conversationId String
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String           // visitor | agent | ai
+  content        String
+  createdAt      DateTime         @default(now())
+
+  @@index([conversationId])
+}
+
+// ─── PROPOSALS & E-SIGNATURES ────────────────────────────
+model Proposal {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contactId   String?
+  contact     Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  title       String
+  status      String   @default("DRAFT") // DRAFT, SENT, VIEWED, SIGNED, DECLINED, EXPIRED
+  content     Json     // Array of blocks: {type, data}
+  total       Float    @default(0)
+  validUntil  DateTime?
+  publicToken String   @unique @default(cuid())
+  signedAt    DateTime?
+  signedBy    String?  // name entered on signature
+  signatureData String? // base64 data URL or typed name
+  declinedAt  DateTime?
+  declineReason String?
+  viewedAt    DateTime?
+  sentAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── SOCIAL MEDIA ────────────────────────────────────────
+model SocialPost {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  content     String
+  platforms   String[] // "twitter","instagram","facebook","linkedin","tiktok"
+  mediaUrls   String[]
+  status      String   @default("DRAFT") // DRAFT | SCHEDULED | PUBLISHED | FAILED
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  errorMsg    String?
+  twitterId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── PROJECT MANAGEMENT ──────────────────────────────────
+model Project {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  status      String   @default("ACTIVE") // ACTIVE | COMPLETED | ARCHIVED
+  color       String   @default("#6366F1")
+  contactId   String?
+  contact     Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tasks       Task[]
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  workspaceId String
+  title       String
+  description String?
+  status      String   @default("TODO") // TODO | IN_PROGRESS | REVIEW | DONE
+  priority    String   @default("MEDIUM") // LOW | MEDIUM | HIGH | URGENT
+  assigneeId  String?
+  dueDate     DateTime?
+  position    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // ─── ENUMS ───────────────────────────────────────────────
@@ -578,4 +918,12 @@ enum AppointmentStatus {
   CONFIRMED
   CANCELLED
   COMPLETED
+}
+
+enum AccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  REVENUE
+  EXPENSE
 }

@@ -1,17 +1,20 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useParams } from "next/navigation";
-import { LayoutDashboard, Users, Receipt, Package, TrendingDown, BarChart3, RefreshCw } from "lucide-react";
+import { LayoutDashboard, Users, Receipt, Package, TrendingDown, BarChart3, RefreshCw, BookOpen, BookMarked, Scale } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { label: "Overview",       href: "",              icon: LayoutDashboard },
-  { label: "Customers",      href: "/customers",    icon: Users           },
-  { label: "Invoices",       href: "/invoices",     icon: Receipt         },
-  { label: "Subscriptions",  href: "/subscriptions",icon: RefreshCw       },
-  { label: "Products",       href: "/products",     icon: Package         },
-  { label: "Expenses",       href: "/expenses",     icon: TrendingDown    },
-  { label: "Reports",        href: "/reports",      icon: BarChart3       },
+  { label: "Overview",       href: "",               icon: LayoutDashboard },
+  { label: "Customers",      href: "/customers",     icon: Users           },
+  { label: "Invoices",       href: "/invoices",      icon: Receipt         },
+  { label: "Subscriptions",  href: "/subscriptions", icon: RefreshCw       },
+  { label: "Products",       href: "/products",      icon: Package         },
+  { label: "Expenses",       href: "/expenses",      icon: TrendingDown    },
+  { label: "Accounts",       href: "/accounts",      icon: BookOpen        },
+  { label: "Ledger",         href: "/ledger",        icon: BookMarked      },
+  { label: "Balance Sheet",  href: "/balance-sheet", icon: Scale           },
+  { label: "Reports",        href: "/reports",       icon: BarChart3       },
 ];
 
 export default function PaymentsLayout({ children }: { children: React.ReactNode }) {

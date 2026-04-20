@@ -6,113 +6,161 @@ import {
   FileText, Zap, MessageSquare, BarChart3, Settings,
   HelpCircle, Database, KeyRound, HardDrive, Webhook, Bot,
   Headphones, UserCheck, Receipt, CalendarCheck, Puzzle, BookOpen,
+  ChevronRight, Inbox, Building2, ScrollText, Star, Globe, MessageCircle,
+  Share2, FolderKanban,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 
-const navItems = [
-  { label: "Dashboard",    href: "dashboard",    icon: LayoutDashboard, active: true  },
-  { label: "Accounting",   href: "payments",     icon: Receipt,         active: true  },
-  { label: "CRM",          href: "crm",          icon: Users,           active: true  },
-  { label: "Calendar",     href: "calendar",     icon: Calendar,        active: true  },
-  { label: "Booking",      href: "booking",      icon: CalendarCheck,   active: true  },
-  { label: "Email",        href: "email",        icon: Mail,            active: true  },
-  { label: "SMS",          href: "sms",          icon: MessageSquare,   active: true  },
-  { label: "Forms",        href: "forms",        icon: FileText,        active: true  },
-  { label: "Support",      href: "support",      icon: Headphones,      active: true  },
-  { label: "HR",           href: "hr",           icon: UserCheck,       active: true  },
-  { label: "Documents",    href: "documents",    icon: BookOpen,        active: true  },
-  { label: "Analytics",    href: "analytics",    icon: BarChart3,       active: true  },
-  { label: "Storage",      href: "storage",      icon: HardDrive,       active: true  },
-  { label: "Automations",  href: "automations",  icon: Zap,             active: true  },
-  { label: "AI",           href: "ai",           icon: Bot,             active: true  },
-  { label: "Clients",      href: "clients",      icon: UserCheck,       active: true  },
-  { label: "Integrations", href: "integrations", icon: Puzzle,          active: true  },
-  { label: "Auth",         href: "auth",         icon: KeyRound,        active: true  },
-  { label: "Webhooks",     href: "webhooks",     icon: Webhook,         active: true  },
-  { label: "Database",     href: "database",     icon: Database,        active: true  },
+const NAV_GROUPS = [
+  {
+    label: "MAIN",
+    items: [
+      { label: "Dashboard",   href: "dashboard",   icon: LayoutDashboard },
+      { label: "Analytics",   href: "analytics",   icon: BarChart3 },
+    ],
+  },
+  {
+    label: "COMMUNICATION",
+    items: [
+      { label: "Inbox",       href: "inbox",        icon: Inbox },
+      { label: "Live Chat",   href: "chat",         icon: MessageCircle },
+      { label: "CRM",         href: "crm",          icon: Users },
+      { label: "Email",       href: "email",        icon: Mail },
+      { label: "SMS",         href: "sms",          icon: MessageSquare },
+      { label: "Support",     href: "support",      icon: Headphones },
+    ],
+  },
+  {
+    label: "SALES",
+    items: [
+      { label: "Accounting",  href: "payments",     icon: Receipt },
+      { label: "Proposals",   href: "proposals",    icon: ScrollText },
+      { label: "Calendar",    href: "calendar",     icon: Calendar },
+      { label: "Booking",     href: "booking",      icon: CalendarCheck },
+      { label: "Clients",     href: "clients",      icon: UserCheck },
+    ],
+  },
+  {
+    label: "MARKETING",
+    items: [
+      { label: "Pages",       href: "pages",        icon: Globe },
+      { label: "Social",      href: "social",       icon: Share2 },
+      { label: "Automations", href: "automations",  icon: Zap },
+      { label: "Reviews",     href: "reviews",      icon: Star },
+      { label: "Forms",       href: "forms",        icon: FileText },
+      { label: "AI",          href: "ai",           icon: Bot },
+    ],
+  },
+  {
+    label: "AGENCY",
+    items: [
+      { label: "Agency",      href: "agency",       icon: Building2 },
+    ],
+  },
+  {
+    label: "PLATFORM",
+    items: [
+      { label: "Projects",    href: "projects",     icon: FolderKanban },
+      { label: "Documents",   href: "documents",    icon: BookOpen },
+      { label: "Storage",     href: "storage",      icon: HardDrive },
+      { label: "HR",          href: "hr",           icon: UserCheck },
+      { label: "Integrations",href: "integrations", icon: Puzzle },
+      { label: "Auth",        href: "auth",         icon: KeyRound },
+      { label: "Webhooks",    href: "webhooks",     icon: Webhook },
+      { label: "Database",    href: "database",     icon: Database },
+    ],
+  },
 ];
 
-interface SidebarProps {
-  workspaceSlug: string;
-}
-
-export function Sidebar({ workspaceSlug }: SidebarProps) {
+export function Sidebar({ workspaceSlug }: { workspaceSlug: string }) {
   const pathname = usePathname();
   const base = `/app/${workspaceSlug}`;
 
   return (
-    <aside className="flex flex-col w-[220px] min-h-screen shrink-0 border-r"
-      style={{ background: "var(--sidebar)", borderColor: "var(--sidebar-border)" }}>
-
+    <aside style={{
+      width: 240,
+      minHeight: "100vh",
+      background: "#0D0D10",
+      borderRight: "1px solid rgba(255,255,255,0.06)",
+      display: "flex",
+      flexDirection: "column",
+      flexShrink: 0,
+    }}>
       {/* Workspace switcher */}
-      <div className="p-3 border-b" style={{ borderColor: "var(--sidebar-border)" }}>
+      <div style={{ padding: "12px 10px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <WorkspaceSwitcher workspaceSlug={workspaceSlug} />
       </div>
 
-      {/* Nav items */}
-      <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
-        {navItems.map(({ label, href, icon: Icon, active }) => {
-          const fullHref = `${base}/${href}`;
-          const isActive = pathname === fullHref || pathname.startsWith(`${fullHref}/`);
-          const isDisabled = !active;
-
-          return (
-            <Link
-              key={href}
-              href={isDisabled ? "#" : fullHref}
-              onClick={isDisabled ? (e) => e.preventDefault() : undefined}
-              className={cn(
-                "group flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium transition-all duration-150",
-                isActive
-                  ? "text-white"
-                  : isDisabled
-                  ? "opacity-35 cursor-not-allowed"
-                  : "hover:text-white"
-              )}
-              style={
-                isActive
-                  ? { background: "var(--obs-accent)", color: "#fff" }
-                  : { color: "var(--sidebar-foreground)" }
-              }
-            >
-              <Icon size={15} className="shrink-0" />
-              <span className="flex-1">{label}</span>
-              {isDisabled && (
-                <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded"
-                  style={{ background: "var(--obs-elevated)", color: "var(--obs-muted)" }}>
-                  Soon
-                </span>
-              )}
-            </Link>
-          );
-        })}
+      {/* Nav */}
+      <nav style={{ flex: 1, overflowY: "auto", padding: "8px 8px", scrollbarWidth: "none" }}>
+        {NAV_GROUPS.map((group) => (
+          <div key={group.label} style={{ marginBottom: 4 }}>
+            <p style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              color: "rgba(255,255,255,0.2)",
+              padding: "10px 10px 4px",
+              textTransform: "uppercase",
+            }}>
+              {group.label}
+            </p>
+            {group.items.map(({ label, href, icon: Icon }) => {
+              const fullHref = `${base}/${href}`;
+              const isActive = pathname === fullHref || pathname.startsWith(`${fullHref}/`);
+              return (
+                <Link key={href} href={fullHref} style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 9,
+                  padding: "7px 10px",
+                  borderRadius: 7,
+                  marginBottom: 1,
+                  textDecoration: "none",
+                  fontSize: 13,
+                  fontWeight: isActive ? 600 : 400,
+                  color: isActive ? "#FFFFFF" : "rgba(255,255,255,0.45)",
+                  background: isActive ? "rgba(245,158,11,0.12)" : "transparent",
+                  borderLeft: isActive ? "2px solid #F59E0B" : "2px solid transparent",
+                  transition: "all 0.15s",
+                }}>
+                  <Icon size={15} style={{ flexShrink: 0, color: isActive ? "#F59E0B" : "rgba(255,255,255,0.35)" }} />
+                  <span style={{ flex: 1 }}>{label}</span>
+                  {isActive && <ChevronRight size={12} style={{ color: "rgba(245,158,11,0.5)" }} />}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       {/* Bottom */}
-      <div className="p-2 border-t space-y-0.5" style={{ borderColor: "var(--sidebar-border)" }}>
-        <Link
-          href={`${base}/settings`}
-          className={cn(
-            "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium transition-all",
-            pathname.startsWith(`${base}/settings`) ? "text-white" : "hover:text-white"
-          )}
-          style={
-            pathname.startsWith(`${base}/settings`)
-              ? { background: "var(--obs-accent)" }
-              : { color: "var(--sidebar-foreground)" }
-          }
-        >
-          <Settings size={15} />
-          Settings
-        </Link>
-        <Link href="#"
-          className="flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium transition-all hover:text-white"
-          style={{ color: "var(--sidebar-foreground)" }}
-        >
-          <HelpCircle size={15} />
-          Help
-        </Link>
+      <div style={{ padding: "8px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        {[
+          { label: "Settings", href: `${base}/settings`, icon: Settings },
+          { label: "Help & Support", href: "#", icon: HelpCircle },
+        ].map(({ label, href, icon: Icon }) => {
+          const isActive = pathname.startsWith(`${base}/settings`) && label === "Settings";
+          return (
+            <Link key={label} href={href} style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 9,
+              padding: "7px 10px",
+              borderRadius: 7,
+              marginBottom: 1,
+              textDecoration: "none",
+              fontSize: 13,
+              fontWeight: isActive ? 600 : 400,
+              color: isActive ? "#FFFFFF" : "rgba(255,255,255,0.4)",
+              background: isActive ? "rgba(245,158,11,0.12)" : "transparent",
+              borderLeft: isActive ? "2px solid #F59E0B" : "2px solid transparent",
+            }}>
+              <Icon size={15} style={{ color: isActive ? "#F59E0B" : "rgba(255,255,255,0.3)" }} />
+              {label}
+            </Link>
+          );
+        })}
       </div>
     </aside>
   );

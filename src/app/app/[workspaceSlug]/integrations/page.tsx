@@ -31,11 +31,11 @@ const NATIVE: Integration[] = [
 ];
 
 const EXTERNAL: Integration[] = [
-  { name: "Google Calendar Sync", description: "Subscribe to your Luminary calendar in Google Calendar using an .ical link.", icon: Calendar, status: "optional" },
+  { name: "Google Calendar Sync", description: "Subscribe to your Stactoro calendar in Google Calendar using an .ical link.", icon: Calendar, status: "optional" },
   { name: "Stripe Payments", description: "Accept card payments and subscriptions from your customers.", icon: Receipt, status: "connected" },
   { name: "QuickBooks Import", description: "Import existing QuickBooks data via CSV export.", icon: Receipt, status: "coming_soon" },
   { name: "Slack Notifications", description: "Get alerts in Slack when new bookings or payments come in.", icon: Plug, status: "coming_soon" },
-  { name: "Zapier", description: "Connect Luminary to 6,000+ apps via Zapier.", icon: Zap, status: "coming_soon" },
+  { name: "Zapier", description: "Connect Stactoro to 6,000+ apps via Zapier.", icon: Zap, status: "coming_soon" },
   { name: "Xero Accounting", description: "Sync invoices and expenses with Xero.", icon: Receipt, status: "coming_soon" },
 ];
 

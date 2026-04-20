@@ -265,6 +265,110 @@ function LandingPage() {
             </div>
           </div>
 
+          {/* ── App preview mockup ── */}
+          <div style={{ margin: "0 0 64px", position: "relative" }}>
+            {/* Glow behind the preview */}
+            <div style={{ position: "absolute", inset: "-40px -80px", background: "radial-gradient(ellipse at center, rgba(245,158,11,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+            {/* Browser chrome */}
+            <div style={{ borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04)", position: "relative" }}>
+              {/* Browser bar */}
+              <div style={{ background: "#161618", padding: "10px 16px", display: "flex", alignItems: "center", gap: 8, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#EF4444" }} />
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#F59E0B" }} />
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#22C55E" }} />
+                <div style={{ flex: 1, margin: "0 16px", background: "rgba(255,255,255,0.05)", borderRadius: 6, padding: "4px 12px", fontSize: 11, color: "#4B4B56" }}>
+                  stactoro.app/app/your-business/dashboard
+                </div>
+              </div>
+              {/* App UI */}
+              <div style={{ background: "#0D0D10", display: "flex", height: 420 }}>
+                {/* Sidebar */}
+                <div style={{ width: 200, background: "#0A0A0D", borderRight: "1px solid rgba(255,255,255,0.05)", padding: "20px 12px", display: "flex", flexDirection: "column", gap: 4, flexShrink: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", marginBottom: 12 }}>
+                    <div style={{ width: 24, height: 24, background: "linear-gradient(135deg, #F59E0B, #D97706)", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.5 9C7.5 9 5 7 4.5 4C4 1.5 6 0.5 7.5 2C8.5 3 8 5.5 8.5 8" fill="#0a0800"/>
+                        <path d="M16.5 9C16.5 9 19 7 19.5 4C20 1.5 18 0.5 16.5 2C15.5 3 16 5.5 15.5 8" fill="#0a0800"/>
+                        <path d="M7.5 8.5C5.5 8.5 5 9.5 5 11V15.5C5 17.5 6.5 19.5 12 19.5C17.5 19.5 19 17.5 19 15.5V11C19 9.5 18.5 8.5 16.5 8.5H7.5Z" fill="#0a0800"/>
+                        <ellipse cx="12" cy="17.5" rx="4.5" ry="3" fill="#0a0800"/>
+                        <circle cx="10.2" cy="18" r="1.1" fill="#F59E0B" opacity="0.6"/>
+                        <circle cx="13.8" cy="18" r="1.1" fill="#F59E0B" opacity="0.6"/>
+                        <circle cx="9" cy="12.5" r="1.4" fill="#F59E0B" opacity="0.7"/>
+                        <circle cx="15" cy="12.5" r="1.4" fill="#F59E0B" opacity="0.7"/>
+                      </svg>
+                    </div>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#EDEDF0" }}>Stactoro</span>
+                  </div>
+                  {[
+                    { label: "Dashboard",    icon: "▪", active: true,  color: "#F59E0B" },
+                    { label: "Payments",     icon: "▪", active: false, color: "#22C55E" },
+                    { label: "CRM",          icon: "▪", active: false, color: "#6366F1" },
+                    { label: "Booking",      icon: "▪", active: false, color: "#F59E0B" },
+                    { label: "Inbox",        icon: "▪", active: false, color: "#EC4899" },
+                    { label: "AI Brain",     icon: "▪", active: false, color: "#818CF8" },
+                    { label: "Email",        icon: "▪", active: false, color: "#8B5CF6" },
+                    { label: "Automations",  icon: "▪", active: false, color: "#F59E0B" },
+                  ].map((item) => (
+                    <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", borderRadius: 7, background: item.active ? "rgba(245,158,11,0.1)" : "transparent" }}>
+                      <div style={{ width: 6, height: 6, borderRadius: "50%", background: item.active ? item.color : "rgba(255,255,255,0.15)" }} />
+                      <span style={{ fontSize: 12, color: item.active ? "#EDEDF0" : "#4B4B56", fontWeight: item.active ? 600 : 400 }}>{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+                {/* Main content */}
+                <div style={{ flex: 1, padding: "20px 24px", overflow: "hidden" }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#F2F2F5", marginBottom: 4 }}>Good afternoon 👋</div>
+                  <div style={{ fontSize: 11, color: "#4B4B56", marginBottom: 20 }}>Here&apos;s what&apos;s happening with <span style={{ color: "#6B6B76" }}>Your Business</span> today.</div>
+                  {/* Stat cards */}
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 20 }}>
+                    {[
+                      { l: "Contacts",      v: "142",    c: "#6366F1" },
+                      { l: "Revenue",       v: "$8,400",  c: "#22C55E" },
+                      { l: "Bookings",      v: "23",     c: "#F59E0B" },
+                      { l: "Campaigns",     v: "7",      c: "#8B5CF6" },
+                    ].map((s) => (
+                      <div key={s.l} style={{ background: "#111114", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "12px 14px" }}>
+                        <div style={{ width: 24, height: 24, borderRadius: 6, background: `${s.c}18`, marginBottom: 8 }} />
+                        <div style={{ fontSize: 18, fontWeight: 700, color: "#F2F2F5", lineHeight: 1 }}>{s.v}</div>
+                        <div style={{ fontSize: 10, color: "#3A3A42", marginTop: 3 }}>{s.l}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Bottom row */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    <div style={{ background: "#111114", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "12px 14px" }}>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: "#F2F2F5", marginBottom: 10 }}>Recent Contacts</div>
+                      {["Sarah M.", "James K.", "Priya L.", "Alex R."].map((n, i) => (
+                        <div key={n} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0", borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.03)" : "none" }}>
+                          <div style={{ width: 20, height: 20, borderRadius: "50%", background: ["#6366F1","#22C55E","#F59E0B","#EC4899"][i], opacity: 0.8 }} />
+                          <span style={{ fontSize: 11, color: "#8B8B96" }}>{n}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ background: "#111114", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "12px 14px" }}>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: "#F2F2F5", marginBottom: 10 }}>Pipeline</div>
+                      {[
+                        { label: "Qualified",   w: "80%",  color: "#818CF8" },
+                        { label: "Proposal",    w: "60%",  color: "#F59E0B" },
+                        { label: "Negotiation", w: "40%",  color: "#EC4899" },
+                        { label: "Closed Won",  w: "90%",  color: "#22C55E" },
+                      ].map((b) => (
+                        <div key={b.label} style={{ marginBottom: 8 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                            <span style={{ fontSize: 10, color: "#4B4B56" }}>{b.label}</span>
+                          </div>
+                          <div style={{ height: 4, background: "rgba(255,255,255,0.05)", borderRadius: 99 }}>
+                            <div style={{ height: "100%", width: b.w, background: b.color, borderRadius: 99, opacity: 0.8 }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Stats row */}
           <div style={{ display: "flex", gap: 0, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 40, flexWrap: "wrap" }}>
             {[

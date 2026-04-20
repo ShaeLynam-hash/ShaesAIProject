@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Plus, Search, Users, Trash2, Mail, Phone, Building2 } from "lucide-react";
+import { Plus, Search, Users, Trash2, Mail, Phone, Building2, Upload } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +18,7 @@ const SOURCES = ["Website", "Referral", "LinkedIn", "Cold Outreach", "Event", "O
 
 export default function ContactsPage() {
   const params = useParams();
+  const router = useRouter();
   const workspaceSlug = params?.workspaceSlug as string;
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
@@ -119,7 +120,8 @@ export default function ContactsPage() {
             <p className="text-sm font-medium" style={{ color: "var(--obs-text)" }}>{search ? "No matches" : "No contacts yet"}</p>
           </div>
         ) : filtered.map((c) => (
-          <div key={c.id} className="grid grid-cols-[2fr_2fr_1fr_1fr_40px] gap-4 px-5 py-4 border-b items-center last:border-0" style={{ borderColor: "var(--obs-border)" }}>
+          <div key={c.id} className="grid grid-cols-[2fr_2fr_1fr_1fr_40px] gap-4 px-5 py-4 border-b items-center last:border-0 cursor-pointer hover:bg-white/[0.02]" style={{ borderColor: "var(--obs-border)" }}
+            onClick={(e) => { if ((e.target as HTMLElement).closest("button")) return; router.push(`/app/${workspaceSlug}/crm/contacts/${c.id}`); }}>
             <div>
               <p className="text-sm font-medium" style={{ color: "var(--obs-text)" }}>{c.firstName} {c.lastName ?? ""}</p>
               {c.email && <div className="flex items-center gap-1 mt-0.5"><Mail size={10} style={{ color: "var(--obs-muted)" }} /><p className="text-xs" style={{ color: "var(--obs-muted)" }}>{c.email}</p></div>}

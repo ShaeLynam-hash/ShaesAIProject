@@ -66,7 +66,7 @@ export default function BillingPage() {
 
   useEffect(() => {
     if (searchParams.get("success") === "true") {
-      toast.success("Subscription activated! Welcome to Luminary.");
+      toast.success("Subscription activated! Welcome to Stactoro.");
     }
     // Fetch workspace billing info
     fetch(`/api/workspaces/${workspaceSlug}/billing`)
@@ -133,7 +133,7 @@ export default function BillingPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-slate-900">Billing &amp; Plans</h2>
-          <p className="text-slate-500 text-sm mt-1">Manage your Luminary subscription.</p>
+          <p className="text-slate-500 text-sm mt-1">Manage your Stactoro subscription.</p>
         </div>
         <Button variant="outline" onClick={handlePortal}>
           <CreditCard size={16} className="mr-2" /> Manage Billing

@@ -3,35 +3,92 @@ import { Search, Bell } from "lucide-react";
 import { UserMenu } from "./UserMenu";
 
 interface TopbarProps {
-  title: string;
   workspaceSlug: string;
+  workspaceName: string;
 }
 
-export function Topbar({ title, workspaceSlug }: TopbarProps) {
+export function Topbar({ workspaceSlug, workspaceName }: TopbarProps) {
   return (
-    <header className="h-14 flex items-center px-5 gap-4 shrink-0 border-b"
-      style={{ background: "var(--obs-surface)", borderColor: "var(--obs-border)" }}>
-      <h1 className="text-sm font-semibold flex-1" style={{ color: "var(--obs-text)" }}>
-        {title}
-      </h1>
+    <header style={{
+      height: 56,
+      display: "flex",
+      alignItems: "center",
+      padding: "0 24px",
+      gap: 16,
+      flexShrink: 0,
+      background: "#0D0D10",
+      borderBottom: "1px solid rgba(255,255,255,0.06)",
+    }}>
+      {/* Workspace name */}
+      <p style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.5)", whiteSpace: "nowrap", flexShrink: 0 }}>
+        {workspaceName}
+      </p>
 
-      <div className="flex items-center gap-2 rounded-lg px-3 py-1.5 w-56 border"
-        style={{ background: "var(--obs-elevated)", borderColor: "var(--obs-border)" }}>
-        <Search size={13} style={{ color: "var(--obs-muted)" }} className="shrink-0" />
+      <div style={{ width: 1, height: 18, background: "rgba(255,255,255,0.08)", flexShrink: 0 }} />
+
+      {/* Search */}
+      <div style={{
+        flex: 1,
+        maxWidth: 380,
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "0 12px",
+        height: 34,
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.07)",
+        borderRadius: 8,
+      }}>
+        <Search size={13} style={{ color: "rgba(255,255,255,0.25)", flexShrink: 0 }} />
         <input
           type="text"
-          placeholder="Search…"
-          className="bg-transparent text-xs outline-none w-full placeholder:opacity-50"
-          style={{ color: "var(--obs-text)" }}
+          placeholder="Search anything…"
+          style={{
+            background: "transparent",
+            border: "none",
+            outline: "none",
+            fontSize: 13,
+            color: "#EDEDF0",
+            width: "100%",
+          }}
         />
-        <kbd className="text-[10px] px-1 rounded border"
-          style={{ color: "var(--obs-muted)", borderColor: "var(--obs-border)" }}>⌘K</kbd>
+        <kbd style={{
+          fontSize: 10,
+          padding: "2px 6px",
+          borderRadius: 4,
+          border: "1px solid rgba(255,255,255,0.1)",
+          color: "rgba(255,255,255,0.25)",
+          fontFamily: "inherit",
+          flexShrink: 0,
+        }}>⌘K</kbd>
       </div>
 
-      <button className="relative p-1.5 rounded-lg transition-colors hover:bg-white/5">
-        <Bell size={16} style={{ color: "var(--obs-muted)" }} />
-        <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full"
-          style={{ background: "var(--obs-accent)" }} />
+      <div style={{ flex: 1 }} />
+
+      {/* Notifications */}
+      <button style={{
+        position: "relative",
+        width: 34,
+        height: 34,
+        borderRadius: 8,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "transparent",
+        border: "1px solid rgba(255,255,255,0.07)",
+        cursor: "pointer",
+      }}>
+        <Bell size={15} style={{ color: "rgba(255,255,255,0.4)" }} />
+        <span style={{
+          position: "absolute",
+          top: 7,
+          right: 7,
+          width: 6,
+          height: 6,
+          borderRadius: "50%",
+          background: "#F59E0B",
+          border: "1.5px solid #0D0D10",
+        }} />
       </button>
 
       <UserMenu workspaceSlug={workspaceSlug} />

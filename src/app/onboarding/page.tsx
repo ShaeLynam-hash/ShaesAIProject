@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Building2, Palette, Users, CreditCard, CheckCircle, ArrowRight, Check } from "lucide-react";
 
 const STEPS = [
@@ -43,6 +42,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [workspaceSlug, setWorkspaceSlug] = useState("");
   const [inviteEmails, setInviteEmails] = useState(["", ""]);
   const [selectedPlan, setSelectedPlan] = useState("pro");
@@ -57,23 +57,26 @@ export default function OnboardingPage() {
   }
 
   async function submit() {
-    if (!form.name || form.name.length < 2) { toast.error("Enter your business name"); return; }
+    if (!form.name || form.name.length < 2) { setSubmitError("Enter your business name"); return; }
     setSubmitting(true);
-    const res = await fetch("/api/workspaces", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: form.name, industry: form.industry, timezone: form.timezone, website: form.website }),
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      toast.error(err.error ?? "Failed to create workspace");
+    setSubmitError("");
+    try {
+      const res = await fetch("/api/workspaces", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: form.name, industry: form.industry, timezone: form.timezone, website: form.website }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSubmitError(data.error ?? `Error ${res.status} — please try again`);
+        setSubmitting(false);
+        return;
+      }
+      router.push(`/app/${data.workspace.slug}/dashboard`);
+    } catch {
+      setSubmitError("Network error — please check your connection and try again");
       setSubmitting(false);
-      return;
     }
-    const { workspace } = await res.json();
-    setWorkspaceSlug(workspace.slug);
-    setStep(5);
-    setSubmitting(false);
   }
 
   return (
@@ -153,7 +156,7 @@ export default function OnboardingPage() {
               <div>
                 <label style={labelStyle}>Business Name *</label>
                 <input value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Acme Inc." style={inputStyle} />
-                {workspaceSlug && <p style={{ fontSize: 12, color: "#3A3A42", marginTop: 5 }}>Your URL: <span style={{ color: "#F59E0B" }}>luminary.app/app/{workspaceSlug}</span></p>}
+                {workspaceSlug && <p style={{ fontSize: 12, color: "#3A3A42", marginTop: 5 }}>Your URL: <span style={{ color: "#F59E0B" }}>stactoro.app/app/{workspaceSlug}</span></p>}
               </div>
               <div>
                 <label style={labelStyle}>Industry</label>
@@ -170,7 +173,7 @@ export default function OnboardingPage() {
                   {TIMEZONES.map((t) => <option key={t} value={t} style={{ background: "#0F0F12" }}>{t}</option>)}
                 </select>
               </div>
-              <button onClick={() => { if (form.name.length >= 2) setStep(2); else toast.error("Enter your business name"); }}
+              <button onClick={() => { if (form.name.length >= 2) setStep(2); else setSubmitError("Enter your business name"); }}
                 style={{ width: "100%", padding: "13px", background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                 Continue <ArrowRight size={16} />
               </button>
@@ -276,6 +279,11 @@ export default function OnboardingPage() {
                   </div>
                 ))}
               </div>
+              {submitError && (
+                <div style={{ padding: "10px 14px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 10, fontSize: 13, color: "#fca5a5" }}>
+                  {submitError}
+                </div>
+              )}
               <div style={{ display: "flex", gap: 10 }}>
                 <button onClick={() => setStep(3)}
                   style={{ flex: 1, padding: "12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "#EDEDF0", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
@@ -304,7 +312,7 @@ export default function OnboardingPage() {
                 Go to Dashboard <ArrowRight size={17} />
               </button>
               <p style={{ fontSize: 12, color: "#3A3A42", marginTop: 16 }}>
-                luminary.app/app/{workspaceSlug}
+                stactoro.app/app/{workspaceSlug}
               </p>
             </div>
           )}

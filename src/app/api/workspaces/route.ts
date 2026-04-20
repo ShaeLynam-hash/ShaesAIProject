@@ -71,6 +71,31 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  // Auto-provision Twilio sub-account (non-fatal if it fails)
+  const masterSid   = process.env.TWILIO_ACCOUNT_SID;
+  const masterToken = process.env.TWILIO_AUTH_TOKEN;
+  if (masterSid && masterToken) {
+    try {
+      const twilio = (await import("twilio")).default;
+      const master = twilio(masterSid, masterToken);
+      const subAccount = await master.api.v2010.accounts.create({
+        friendlyName: `${workspace.name} (${workspace.slug})`,
+      });
+      const PLAN_LIMITS: Record<string, number> = { FREE: 100, STARTER: 500, PRO: 2000, AGENCY: 10000, ENTERPRISE: 99999 };
+      await prisma.workspace.update({
+        where: { id: workspace.id },
+        data: {
+          twilioSubAccountSid:   subAccount.sid,
+          twilioSubAccountToken: subAccount.authToken,
+          smsMonthlyLimit:       PLAN_LIMITS[workspace.plan] ?? 100,
+          smsUsageResetAt:       new Date(),
+        },
+      });
+    } catch (e) {
+      console.error("Twilio sub-account provisioning failed (non-fatal):", e);
+    }
+  }
+
   // Send welcome email (non-fatal if it fails)
   if (user.email) {
     try {
