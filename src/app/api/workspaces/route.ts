@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
 import { slugify } from "@/lib/workspace";
@@ -7,15 +7,8 @@ import { createWorkspaceSchema } from "@/lib/validators/workspace";
 import { resend, FROM_EMAIL, APP_NAME } from "@/lib/resend";
 
 export async function POST(req: NextRequest) {
-  // NextAuth v5 uses "authjs.session-token" (prod: "__Secure-authjs.session-token")
-  const isSecure = req.url.startsWith("https");
-  const cookieName = isSecure ? "__Secure-authjs.session-token" : "authjs.session-token";
-  const token = await getToken({
-    req,
-    secret: process.env.NEXTAUTH_SECRET,
-    cookieName,
-  });
-  const userId = (token?.id ?? token?.sub) as string | undefined;
+  const session = await auth();
+  const userId = session?.user?.id as string | undefined;
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
