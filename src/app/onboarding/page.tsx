@@ -232,9 +232,9 @@ export default function OnboardingPage() {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {[
-                  { key: "starter", name: "Starter", price: "$49/mo", desc: "For small businesses getting started", features: ["3 team members", "All core modules", "1,000 emails/mo"] },
-                  { key: "pro",     name: "Pro",     price: "$99/mo", desc: "For growing teams that need more",  features: ["10 team members", "All modules + AI", "10,000 emails/mo"], popular: true },
-                  { key: "agency",  name: "Agency",  price: "$249/mo",desc: "For agencies managing multiple clients", features: ["Unlimited members", "White-label", "Priority support"] },
+                  { key: "starter", name: "Starter", price: "$49/mo", salePrice: "$24.50", desc: "For small businesses getting started", features: ["3 team members", "All core modules", "1,000 emails/mo"] },
+                  { key: "pro",     name: "Pro",     price: "$99/mo", salePrice: "$49.50", desc: "For growing teams that need more",  features: ["10 team members", "All modules + AI", "10,000 emails/mo"], popular: true },
+                  { key: "agency",  name: "Agency",  price: "$249/mo", salePrice: "$124.50", desc: "For agencies managing multiple clients", features: ["Unlimited members", "White-label", "Priority support"] },
                 ].map((plan) => (
                   <div key={plan.key} onClick={() => setSelectedPlan(plan.key)}
                     style={{
@@ -252,9 +252,10 @@ export default function OnboardingPage() {
                       <div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                           <span style={{ fontSize: 15, fontWeight: 700 }}>{plan.name}</span>
-                          <span style={{ fontSize: 14, fontWeight: 700, color: "#F59E0B" }}>{plan.price}</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#F59E0B" }}>{plan.salePrice}</span>
+                          <span style={{ fontSize: 12, color: "#4B4B56", textDecoration: "line-through" }}>{plan.price}</span>
                         </div>
-                        <p style={{ fontSize: 12, color: "#5B5B66", marginTop: 2 }}>{plan.desc}</p>
+                        <p style={{ fontSize: 12, color: "#5B5B66", marginTop: 2 }}>{plan.desc} · <span style={{ color: "#F59E0B", fontWeight: 600 }}>50% off first month</span></p>
                       </div>
                       <div style={{ width: 20, height: 20, borderRadius: "50%", border: selectedPlan === plan.key ? "none" : "1.5px solid rgba(255,255,255,0.15)", background: selectedPlan === plan.key ? "#F59E0B" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                         {selectedPlan === plan.key && <Check size={11} color="#0a0800" strokeWidth={3} />}
