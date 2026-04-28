@@ -7,11 +7,11 @@ export function StactoroMark({ size = 36, className }: StactoroLogoProps) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/stactoro-bull.svg"
+      src="/stactoro-logo.jpg"
       width={size}
       height={size}
       alt="Stactoro"
-      style={{ objectFit: "contain", flexShrink: 0, display: "block" }}
+      style={{ objectFit: "contain", flexShrink: 0, display: "block", borderRadius: 6 }}
       className={className}
     />
   )
