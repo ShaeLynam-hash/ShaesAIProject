@@ -42,9 +42,10 @@ export async function POST(req: NextRequest) {
   if (!realmId) return NextResponse.json({ error: "Missing realmId" }, { status: 400 });
 
   // Refresh token if expired
-  let accessToken = integration.accessToken;
+  let accessToken: string = integration.accessToken;
   if (integration.tokenExpiry && integration.tokenExpiry < new Date()) {
-    accessToken = await refreshQBToken(integration, workspace.id);
+    const refreshed = await refreshQBToken(integration, workspace.id);
+    if (refreshed) accessToken = refreshed;
   }
 
   const baseUrl = `https://quickbooks.api.intuit.com/v3/company/${realmId}`;
