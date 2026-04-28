@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "SaaS Platform — All-in-One Business OS",
+  title: "Stactoro — All-in-One Business OS",
   description: "CRM, email marketing, payments, automations, and more — all in one place.",
 };
 
