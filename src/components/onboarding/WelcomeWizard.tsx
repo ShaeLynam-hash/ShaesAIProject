@@ -22,7 +22,7 @@ const STEP_DESCRIPTIONS: Record<string, string> = {
   contact:    "Add a customer or lead to your CRM.",
   invoice:    "Create and send your first invoice.",
   sms:        "Claim a dedicated phone number for SMS.",
-  email:      "Connect Resend to send emails from your domain.",
+  email:      "Connect your email to send campaigns from your own address.",
   team:       "Bring a colleague onboard.",
   booking:    "Let clients book appointments with you.",
   campaign:   "Reach your contacts with a bulk message.",

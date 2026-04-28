@@ -9,26 +9,36 @@ export async function GET(req: NextRequest) {
   const slug = req.nextUrl.searchParams.get("workspace");
   if (!slug) return NextResponse.json({ error: "Missing workspace" }, { status: 400 });
 
-  const workspace = await prisma.workspace.findUnique({
-    where: { slug },
-    select: {
-      id: true, name: true, twilioPhoneNumber: true, resendApiKey: true, fromEmail: true,
-      _count: {
-        select: { contacts: true, invoices: true, members: true, appointments: true, smsCampaigns: true, emailCampaigns: true },
+  const [workspace, emailIntegration] = await Promise.all([
+    prisma.workspace.findUnique({
+      where: { slug },
+      select: {
+        id: true, name: true, twilioPhoneNumber: true, fromEmail: true,
+        _count: {
+          select: { contacts: true, invoices: true, members: true, services: true, smsCampaigns: true, emailCampaigns: true },
+        },
       },
-    },
-  });
+    }),
+    prisma.workspaceIntegration.findFirst({
+      where: {
+        workspace: { slug },
+        provider: { in: ["gmail", "smtp"] },
+        status: "active",
+      },
+    }).catch(() => null),
+  ]);
   if (!workspace) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+  const emailConnected = !!emailIntegration || !!workspace.fromEmail;
+
   const steps = [
-    { id: "workspace",   label: "Workspace created",        done: true,                                           href: null },
-    { id: "contact",     label: "Add your first contact",   done: workspace._count.contacts > 0,                  href: "crm/contacts" },
-    { id: "invoice",     label: "Create an invoice",        done: workspace._count.invoices > 0,                  href: "payments/invoices" },
-    { id: "sms",         label: "Set up your phone number", done: !!workspace.twilioPhoneNumber,                  href: "settings/communications" },
-    { id: "email",       label: "Connect email (Resend)",   done: !!(workspace.resendApiKey && workspace.fromEmail), href: "settings/communications" },
-    { id: "team",        label: "Invite a teammate",        done: workspace._count.members > 1,                   href: "settings/team" },
-    { id: "booking",     label: "Set up booking services",  done: workspace._count.appointments > 0,              href: "booking/services" },
-    { id: "campaign",    label: "Send your first campaign", done: workspace._count.emailCampaigns > 0 || workspace._count.smsCampaigns > 0, href: "email/campaigns" },
+    { id: "workspace", label: "Workspace created",          done: true,                                                href: null },
+    { id: "email",     label: "Connect your email",         done: emailConnected,                                      href: "integrations" },
+    { id: "contact",   label: "Add your first contact",     done: workspace._count.contacts > 0,                       href: "crm/contacts" },
+    { id: "invoice",   label: "Create your first invoice",  done: workspace._count.invoices > 0,                       href: "payments/invoices" },
+    { id: "booking",   label: "Set up booking services",    done: workspace._count.services > 0,                       href: "booking/services" },
+    { id: "campaign",  label: "Send your first campaign",   done: workspace._count.emailCampaigns > 0 || workspace._count.smsCampaigns > 0, href: "email/campaigns" },
+    { id: "team",      label: "Invite a teammate",          done: workspace._count.members > 1,                        href: "settings/team" },
   ];
 
   const completed = steps.filter((s) => s.done).length;

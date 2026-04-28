@@ -1,13 +1,14 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, Palette, Users, CreditCard, CheckCircle, ArrowRight, Check } from "lucide-react";
+import { Building2, Palette, Users, Mail, CreditCard, CheckCircle, ArrowRight, Check } from "lucide-react";
 
 const STEPS = [
   { id: 1, label: "Your Business", icon: Building2 },
   { id: 2, label: "Personalize",   icon: Palette    },
   { id: 3, label: "Team",          icon: Users      },
-  { id: 4, label: "Plan",          icon: CreditCard },
+  { id: 4, label: "Email",         icon: Mail       },
+  { id: 5, label: "Plan",          icon: CreditCard },
 ];
 
 const INDUSTRIES = ["Technology","Healthcare","Finance","Retail","Education","Real Estate","Marketing","Legal","Construction","Food & Beverage","Fitness","Beauty & Wellness","Other"];
@@ -51,6 +52,14 @@ export default function OnboardingPage() {
     name: "", industry: "", timezone: "America/New_York", website: "",
   });
 
+  const [smtpForm, setSmtpForm] = useState({
+    host: "", port: "587", username: "", password: "", fromEmail: "", fromName: "",
+  });
+
+  function setSmtp(key: string, value: string) {
+    setSmtpForm((f) => ({ ...f, [key]: value }));
+  }
+
   function set(key: string, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
     if (key === "name") setWorkspaceSlug(slugify(value));
@@ -72,7 +81,16 @@ export default function OnboardingPage() {
         setSubmitting(false);
         return;
       }
-      router.push(`/app/${data.workspace.slug}/dashboard`);
+      const slug = data.workspace.slug;
+      // Save SMTP if provided
+      if (smtpForm.host && smtpForm.username && smtpForm.password) {
+        await fetch(`/api/integrations/smtp/connect`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ workspaceSlug: slug, ...smtpForm, fromEmail: smtpForm.username }),
+        }).catch(() => null);
+      }
+      router.push(`/app/${slug}/dashboard`);
     } catch {
       setSubmitError("Network error — please check your connection and try again");
       setSubmitting(false);
@@ -105,7 +123,7 @@ export default function OnboardingPage() {
         </div>
 
         {/* Step indicators */}
-        {step < 5 && (
+        {step < 6 && (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0, marginBottom: 36 }}>
             {STEPS.map((s, i) => {
               const done = step > s.id;
@@ -223,8 +241,56 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {/* ── Step 4: Choose Plan ── */}
+          {/* ── Step 4: Connect Email ── */}
           {step === 4 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div>
+                <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>Connect your email</h2>
+                <p style={{ fontSize: 14, color: "#5B5B66" }}>Send campaigns and invoices from your own address. You can also connect Gmail from the Connections page after setup.</p>
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ flex: 2 }}>
+                  <label style={labelStyle}>SMTP Host</label>
+                  <input value={smtpForm.host} onChange={(e) => setSmtp("host", e.target.value)} placeholder="smtp.gmail.com" style={inputStyle} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={labelStyle}>Port</label>
+                  <input value={smtpForm.port} onChange={(e) => setSmtp("port", e.target.value)} placeholder="587" style={inputStyle} />
+                </div>
+              </div>
+              <div>
+                <label style={labelStyle}>Username / Email</label>
+                <input type="email" value={smtpForm.username} onChange={(e) => setSmtp("username", e.target.value)} placeholder="you@yourdomain.com" style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>Password / App Password</label>
+                <input type="password" value={smtpForm.password} onChange={(e) => setSmtp("password", e.target.value)} placeholder="••••••••••••" style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>From Name (optional)</label>
+                <input value={smtpForm.fromName} onChange={(e) => setSmtp("fromName", e.target.value)} placeholder="Your Business Name" style={inputStyle} />
+              </div>
+              <div style={{ padding: "10px 14px", background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)", borderRadius: 10, fontSize: 12, color: "#8B7D4A", lineHeight: 1.5 }}>
+                💡 Using Gmail? Enable 2-factor auth and create an <strong style={{ color: "#F59E0B" }}>App Password</strong> at myaccount.google.com — then use that as your password here.
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button onClick={() => setStep(3)}
+                  style={{ flex: 1, padding: "12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "#EDEDF0", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                  ← Back
+                </button>
+                <button onClick={() => setStep(5)}
+                  style={{ flex: 2, padding: "12px", background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#0a0800", border: "none", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                  Continue <ArrowRight size={15} />
+                </button>
+              </div>
+              <button onClick={() => setStep(5)} style={{ background: "none", border: "none", color: "#3A3A42", fontSize: 13, cursor: "pointer", textAlign: "center", fontFamily: "inherit" }}>
+                Skip for now
+              </button>
+            </div>
+          )}
+
+          {/* ── Step 5: Choose Plan ── */}
+          {step === 5 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <div>
                 <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>Choose your plan</h2>
@@ -275,7 +341,7 @@ export default function OnboardingPage() {
                 </div>
               )}
               <div style={{ display: "flex", gap: 10 }}>
-                <button onClick={() => setStep(3)}
+                <button onClick={() => setStep(4)}
                   style={{ flex: 1, padding: "12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", color: "#EDEDF0", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                   ← Back
                 </button>
@@ -287,8 +353,8 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {/* ── Step 5: Done ── */}
-          {step === 5 && (
+          {/* ── Step 6: Done ── */}
+          {step === 6 && (
             <div style={{ textAlign: "center", padding: "16px 0" }}>
               <div style={{ width: 72, height: 72, background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
                 <CheckCircle size={36} color="#F59E0B" />
@@ -308,7 +374,7 @@ export default function OnboardingPage() {
           )}
         </div>
 
-        {step < 5 && (
+        {step < 6 && (
           <p style={{ textAlign: "center", fontSize: 12, color: "#2A2A32", marginTop: 20 }}>
             Secured with 256-bit encryption · No credit card required
           </p>
