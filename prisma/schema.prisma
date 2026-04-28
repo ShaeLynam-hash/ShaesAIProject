@@ -182,6 +182,7 @@ model Workspace {
   chatWidget         ChatWidget?
   socialPosts        SocialPost[]
   projects           Project[]
+  integrations       WorkspaceIntegration[]
 
   // Agency / White-label
   isAgency           Boolean  @default(false)
@@ -879,6 +880,29 @@ model Task {
   position    Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// ─── INTEGRATIONS ─────────────────────────────────────────
+model WorkspaceIntegration {
+  id           String   @id @default(cuid())
+  workspaceId  String
+  provider     String   // 'quickbooks' | 'gohighlevel' | 'gmail' | 'smtp' | 'outlook' | 'xero'
+  accessToken  String?  @db.Text
+  refreshToken String?  @db.Text
+  tokenExpiry  DateTime?
+  apiKey       String?  @db.Text
+  config       Json?    // provider-specific metadata: realmId, smtpHost, port, etc.
+  status       String   @default("active") // 'active' | 'error' | 'expired'
+  lastSyncAt   DateTime?
+  syncCount    Int      @default(0)
+  errorMsg     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, provider])
+  @@index([workspaceId])
 }
 
 // ─── ENUMS ───────────────────────────────────────────────
