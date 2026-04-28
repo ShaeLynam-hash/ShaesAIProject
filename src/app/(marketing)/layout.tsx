@@ -6,10 +6,9 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
       <header className="border-b border-slate-200 bg-white/95 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">S</span>
-            </div>
-            <span className="font-bold text-xl text-slate-900">SaaS Platform</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/stactoro-logo.jpg" alt="Stactoro" style={{ width: 36, height: 36, objectFit: "contain", borderRadius: 6 }} />
+            <span className="font-bold text-xl text-slate-900">Stactoro</span>
           </Link>
           <nav className="hidden md:flex items-center gap-8">
             <Link href="/#features" className="text-sm text-slate-600 hover:text-slate-900">Features</Link>
@@ -30,10 +29,9 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-                  <span className="text-white font-bold text-xs">S</span>
-                </div>
-                <span className="font-bold text-slate-900">SaaS Platform</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/stactoro-logo.jpg" alt="Stactoro" style={{ width: 28, height: 28, objectFit: "contain", borderRadius: 4 }} />
+                <span className="font-bold text-slate-900">Stactoro</span>
               </div>
               <p className="text-xs text-slate-500">The all-in-one business operating system.</p>
             </div>
@@ -51,7 +49,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             ))}
           </div>
           <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-slate-400">© 2025 SaaS Platform. All rights reserved.</p>
+            <p className="text-xs text-slate-400">© 2025 Stactoro. All rights reserved.</p>
             <div className="flex gap-6">
               {["Privacy", "Terms", "Security"].map((l) => <a key={l} href="#" className="text-xs text-slate-400 hover:text-slate-900">{l}</a>)}
             </div>
