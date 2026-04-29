@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 230" fill="none">
+  <defs>
+    <linearGradient id="headGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C41E1E"/>
+      <stop offset="100%" stop-color="#7F0D0D"/>
+    </linearGradient>
+    <linearGradient id="hornGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <linearGradient id="snoutGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#991B1B"/>
+      <stop offset="100%" stop-color="#6B0D0D"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Left horn -->
+  <path d="M72 82 Q52 55 38 18 Q58 26 72 54 Z" fill="url(#hornGrad)"/>
+  <!-- Right horn -->
+  <path d="M128 82 Q148 55 162 18 Q142 26 128 54 Z" fill="url(#hornGrad)"/>
+
+  <!-- Left ear -->
+  <ellipse cx="50" cy="108" rx="18" ry="13" fill="#9B1414"/>
+  <!-- Right ear -->
+  <ellipse cx="150" cy="108" rx="18" ry="13" fill="#9B1414"/>
+  <!-- Ear inner left -->
+  <ellipse cx="50" cy="108" rx="10" ry="7" fill="#C41E1E"/>
+  <!-- Ear inner right -->
+  <ellipse cx="150" cy="108" rx="10" ry="7" fill="#C41E1E"/>
+
+  <!-- Main head -->
+  <ellipse cx="100" cy="118" rx="62" ry="58" fill="url(#headGrad)"/>
+
+  <!-- Brow ridge -->
+  <path d="M60 100 Q80 88 100 86 Q120 88 140 100" stroke="#7F0D0D" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+  <!-- Left eye white -->
+  <ellipse cx="79" cy="107" rx="10" ry="11" fill="#1A0505"/>
+  <!-- Right eye white -->
+  <ellipse cx="121" cy="107" rx="10" ry="11" fill="#1A0505"/>
+  <!-- Left pupil -->
+  <ellipse cx="80" cy="108" rx="5" ry="6" fill="#0A0000"/>
+  <!-- Right pupil -->
+  <ellipse cx="122" cy="108" rx="5" ry="6" fill="#0A0000"/>
+  <!-- Eye highlights -->
+  <circle cx="82" cy="104" r="2.5" fill="white" opacity="0.5"/>
+  <circle cx="124" cy="104" r="2.5" fill="white" opacity="0.5"/>
+
+  <!-- Snout -->
+  <ellipse cx="100" cy="150" rx="36" ry="24" fill="url(#snoutGrad)"/>
+  <!-- Nostril left -->
+  <ellipse cx="87" cy="153" rx="8" ry="6" fill="#5C0909"/>
+  <!-- Nostril right -->
+  <ellipse cx="113" cy="153" rx="8" ry="6" fill="#5C0909"/>
+
+  <!-- Ring (optional detail) -->
+  <ellipse cx="100" cy="152" rx="14" ry="5" stroke="#D97706" stroke-width="2" fill="none"/>
+
+  <!-- STACTORO text -->
+  <text
+    x="100"
+    y="205"
+    text-anchor="middle"
+    font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif"
+    font-weight="900"
+    font-size="22"
+    fill="#F59E0B"
+    letter-spacing="4"
+  >STACTORO</text>
+
+  <!-- Underline accent -->
+  <rect x="28" y="212" width="144" height="2.5" rx="1.5" fill="#B45309" opacity="0.6"/>
+</svg>
