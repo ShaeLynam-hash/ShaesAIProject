@@ -10,9 +10,9 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <img src="/stactoro-logo.png" alt="Stactoro" style={{ height: 52, width: "auto", objectFit: "contain" }} />
           </Link>
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="/#features" className="text-sm text-slate-600 hover:text-slate-900">Features</Link>
+            <Link href="/features" className="text-sm text-slate-600 hover:text-slate-900">Features</Link>
             <Link href="/pricing" className="text-sm text-slate-600 hover:text-slate-900">Pricing</Link>
-            <Link href="/#testimonials" className="text-sm text-slate-600 hover:text-slate-900">Customers</Link>
+            <Link href="/about" className="text-sm text-slate-600 hover:text-slate-900">About</Link>
           </nav>
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-sm font-medium text-slate-700 hover:text-slate-900">Log In</Link>
@@ -34,14 +34,38 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
               <p className="text-xs text-slate-500">The all-in-one business operating system.</p>
             </div>
             {[
-              { heading: "Product", links: ["Features", "Pricing", "Changelog", "Roadmap"] },
-              { heading: "Company", links: ["About", "Blog", "Careers", "Press"] },
-              { heading: "Support", links: ["Documentation", "Help Center", "Status", "Contact"] },
+              {
+                heading: "Product",
+                links: [
+                  { label: "Features", href: "/features" },
+                  { label: "Pricing", href: "/pricing" },
+                  { label: "Changelog", href: "#" },
+                  { label: "Roadmap", href: "#" },
+                ],
+              },
+              {
+                heading: "Company",
+                links: [
+                  { label: "About", href: "/about" },
+                  { label: "Blog", href: "#" },
+                  { label: "Careers", href: "#" },
+                  { label: "Press", href: "#" },
+                ],
+              },
+              {
+                heading: "Support",
+                links: [
+                  { label: "Documentation", href: "#" },
+                  { label: "Help Center", href: "#" },
+                  { label: "Status", href: "#" },
+                  { label: "Contact", href: "#" },
+                ],
+              },
             ].map(({ heading, links }) => (
               <div key={heading}>
                 <h4 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-3">{heading}</h4>
                 <ul className="space-y-2">
-                  {links.map((l) => <li key={l}><a href="#" className="text-sm text-slate-500 hover:text-slate-900">{l}</a></li>)}
+                  {links.map((l) => <li key={l.label}><a href={l.href} className="text-sm text-slate-500 hover:text-slate-900">{l.label}</a></li>)}
                 </ul>
               </div>
             ))}
