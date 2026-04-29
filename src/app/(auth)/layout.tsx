@@ -22,7 +22,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 36 }}>
           <a href="/" style={{ textDecoration: "none" }}>
-            <img src="/stactoro-logo-wide.jpg" alt="Stactoro" style={{ height: 48, width: "auto", objectFit: "contain", borderRadius: 8 }} />
+            <img src="/stactoro-logo.png" alt="Stactoro" style={{ height: 48, width: "auto", objectFit: "contain" }} />
           </a>
         </div>
 

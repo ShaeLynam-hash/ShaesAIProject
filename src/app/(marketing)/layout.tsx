@@ -7,7 +7,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/stactoro-logo-wide.jpg" alt="Stactoro" style={{ height: 40, width: "auto", objectFit: "contain" }} />
+            <img src="/stactoro-logo.png" alt="Stactoro" style={{ height: 40, width: "auto", objectFit: "contain" }} />
           </Link>
           <nav className="hidden md:flex items-center gap-8">
             <Link href="/#features" className="text-sm text-slate-600 hover:text-slate-900">Features</Link>
@@ -29,7 +29,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <div>
               <div className="mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/stactoro-logo-wide.jpg" alt="Stactoro" style={{ height: 32, width: "auto", objectFit: "contain" }} />
+                <img src="/stactoro-logo.png" alt="Stactoro" style={{ height: 32, width: "auto", objectFit: "contain" }} />
               </div>
               <p className="text-xs text-slate-500">The all-in-one business operating system.</p>
             </div>

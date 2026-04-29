@@ -200,7 +200,7 @@ function LandingPage() {
         <nav style={{ maxWidth: 1180, margin: "0 auto", padding: "0 24px", height: 58, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Link href="/" style={{ textDecoration: "none" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/stactoro-logo-wide.jpg" alt="Stactoro" style={{ height: 36, width: "auto", objectFit: "contain" }} />
+            <img src="/stactoro-logo.png" alt="Stactoro" style={{ height: 36, width: "auto", objectFit: "contain" }} />
           </Link>
 
           <div className="hide-mob" style={{ display: "flex", alignItems: "center", gap: 0 }}>
@@ -269,7 +269,7 @@ function LandingPage() {
                 <div style={{ width: 194, background: "#07070C", borderRight: "1px solid rgba(255,255,255,0.05)", padding: "18px 10px", display: "flex", flexDirection: "column", gap: 2, flexShrink: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", marginBottom: 14 }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/stactoro-icon.jpg" alt="" style={{ width: 20, height: 20, objectFit: "contain", borderRadius: 4 }} />
+                    <img src="/stactoro-icon.png" alt="" style={{ width: 20, height: 20, objectFit: "contain", borderRadius: 4 }} />
                     <span style={{ fontSize: 12, fontWeight: 700, color: "#DDDDE8", letterSpacing: "-0.015em" }}>Stactoro</span>
                   </div>
                   {[
@@ -647,7 +647,7 @@ function LandingPage() {
             <div className="glow" style={{ width: 500, height: 200, background: "rgba(245,158,11,0.045)", top: -60, left: "50%", transform: "translateX(-50%)" }} />
             <div style={{ position: "relative" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/stactoro-logo-wide.jpg" alt="Stactoro" style={{ height: 72, width: "auto", objectFit: "contain", marginBottom: 28 }} />
+              <img src="/stactoro-logo.png" alt="Stactoro" style={{ height: 72, width: "auto", objectFit: "contain", marginBottom: 28 }} />
               <h2 style={{ fontSize: "clamp(26px, 3.8vw, 48px)", fontWeight: 900, letterSpacing: "-0.04em", color: "#EEEEF4", marginBottom: 14, lineHeight: 1.06 }}>
                 Start building smarter today.
               </h2>
@@ -668,7 +668,7 @@ function LandingPage() {
         <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 18 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/stactoro-icon.jpg" alt="Stactoro" style={{ width: 20, height: 20, objectFit: "contain", borderRadius: 4 }} />
+            <img src="/stactoro-icon.png" alt="Stactoro" style={{ width: 20, height: 20, objectFit: "contain", borderRadius: 4 }} />
             <span style={{ fontSize: 13.5, fontWeight: 700, color: "#E8E8EE", letterSpacing: "-0.02em" }}>Stactoro</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 22, flexWrap: "wrap" }}>
