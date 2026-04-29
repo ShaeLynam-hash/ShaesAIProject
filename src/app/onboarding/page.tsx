@@ -117,7 +117,7 @@ export default function OnboardingPage() {
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <a href="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 10 }}>
-            <img src="/stactoro-logo.svg" alt="Stactoro" style={{ height: 48, width: "auto", objectFit: "contain" }} />
+            <img src="/stactoro-logo.png" alt="Stactoro" style={{ height: 48, width: "auto", objectFit: "contain" }} />
           </a>
         </div>
 
