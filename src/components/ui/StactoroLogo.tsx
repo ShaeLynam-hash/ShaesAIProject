@@ -11,7 +11,7 @@ export function StactoroMark({ size = 36, className }: StactoroLogoProps) {
       width={size}
       height={size}
       alt="Stactoro"
-      style={{ objectFit: "contain", flexShrink: 0, display: "block", borderRadius: 6 }}
+      style={{ objectFit: "contain", flexShrink: 0, display: "block", filter: "brightness(0) invert(1)" }}
       className={className}
     />
   )
