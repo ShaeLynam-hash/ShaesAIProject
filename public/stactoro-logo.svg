@@ -1,73 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 230" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 300">
   <defs>
-    <linearGradient id="headGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#C41E1E"/>
-      <stop offset="100%" stop-color="#7F0D0D"/>
-    </linearGradient>
-    <linearGradient id="hornGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F59E0B"/>
-      <stop offset="100%" stop-color="#B45309"/>
-    </linearGradient>
-    <linearGradient id="snoutGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#991B1B"/>
-      <stop offset="100%" stop-color="#6B0D0D"/>
-    </linearGradient>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;display=swap');
+    </style>
   </defs>
 
   <!-- Left horn -->
-  <path d="M72 82 Q52 55 38 18 Q58 26 72 54 Z" fill="url(#hornGrad)"/>
+  <path d="M 92 96 Q 62 58 32 10 Q 66 28 88 82 Z" fill="#C9922B"/>
   <!-- Right horn -->
-  <path d="M128 82 Q148 55 162 18 Q142 26 128 54 Z" fill="url(#hornGrad)"/>
+  <path d="M 188 96 Q 218 58 248 10 Q 214 28 192 82 Z" fill="#C9922B"/>
 
-  <!-- Left ear -->
-  <ellipse cx="50" cy="108" rx="18" ry="13" fill="#9B1414"/>
-  <!-- Right ear -->
-  <ellipse cx="150" cy="108" rx="18" ry="13" fill="#9B1414"/>
-  <!-- Ear inner left -->
-  <ellipse cx="50" cy="108" rx="10" ry="7" fill="#C41E1E"/>
-  <!-- Ear inner right -->
-  <ellipse cx="150" cy="108" rx="10" ry="7" fill="#C41E1E"/>
+  <!-- Head — single clean shape -->
+  <path d="
+    M 88 90
+    C 60 90 34 106 34 136
+    C 34 176 62 208 140 208
+    C 218 208 246 176 246 136
+    C 246 106 220 90 192 90
+    C 176 86 158 82 140 82
+    C 122 82 104 86 88 90 Z
+  " fill="#9B1111"/>
 
-  <!-- Main head -->
-  <ellipse cx="100" cy="118" rx="62" ry="58" fill="url(#headGrad)"/>
+  <!-- Darker brow band across top of head -->
+  <path d="
+    M 88 90
+    C 104 86 122 82 140 82
+    C 158 82 176 86 192 90
+    C 178 100 160 104 140 104
+    C 120 104 102 100 88 90 Z
+  " fill="#7A0C0C"/>
 
-  <!-- Brow ridge -->
-  <path d="M60 100 Q80 88 100 86 Q120 88 140 100" stroke="#7F0D0D" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Left eye -->
+  <ellipse cx="104" cy="138" rx="14" ry="16" fill="#1A0000"/>
+  <!-- Right eye -->
+  <ellipse cx="176" cy="138" rx="14" ry="16" fill="#1A0000"/>
 
-  <!-- Left eye white -->
-  <ellipse cx="79" cy="107" rx="10" ry="11" fill="#1A0505"/>
-  <!-- Right eye white -->
-  <ellipse cx="121" cy="107" rx="10" ry="11" fill="#1A0505"/>
-  <!-- Left pupil -->
-  <ellipse cx="80" cy="108" rx="5" ry="6" fill="#0A0000"/>
-  <!-- Right pupil -->
-  <ellipse cx="122" cy="108" rx="5" ry="6" fill="#0A0000"/>
-  <!-- Eye highlights -->
-  <circle cx="82" cy="104" r="2.5" fill="white" opacity="0.5"/>
-  <circle cx="124" cy="104" r="2.5" fill="white" opacity="0.5"/>
+  <!-- Snout — flat, wide, minimal -->
+  <ellipse cx="140" cy="180" rx="40" ry="24" fill="#7A0C0C"/>
 
-  <!-- Snout -->
-  <ellipse cx="100" cy="150" rx="36" ry="24" fill="url(#snoutGrad)"/>
-  <!-- Nostril left -->
-  <ellipse cx="87" cy="153" rx="8" ry="6" fill="#5C0909"/>
-  <!-- Nostril right -->
-  <ellipse cx="113" cy="153" rx="8" ry="6" fill="#5C0909"/>
+  <!-- Dividing line on snout -->
+  <line x1="140" y1="158" x2="140" y2="204" stroke="#9B1111" stroke-width="2"/>
 
-  <!-- Ring (optional detail) -->
-  <ellipse cx="100" cy="152" rx="14" ry="5" stroke="#D97706" stroke-width="2" fill="none"/>
-
-  <!-- STACTORO text -->
+  <!-- Wordmark -->
   <text
-    x="100"
-    y="205"
+    x="140" y="258"
     text-anchor="middle"
-    font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif"
+    font-family="Arial Black, 'Helvetica Neue', Arial, sans-serif"
     font-weight="900"
-    font-size="22"
-    fill="#F59E0B"
-    letter-spacing="4"
+    font-size="30"
+    letter-spacing="6"
+    fill="#C9922B"
   >STACTORO</text>
 
-  <!-- Underline accent -->
-  <rect x="28" y="212" width="144" height="2.5" rx="1.5" fill="#B45309" opacity="0.6"/>
+  <!-- Thin rule under wordmark -->
+  <line x1="34" y1="268" x2="246" y2="268" stroke="#C9922B" stroke-width="1.5" stroke-opacity="0.4"/>
 </svg>
