@@ -21,9 +21,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div style={{ width: "100%", maxWidth: 440, position: "relative" }}>
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <a href="/" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 10 }}>
-            <img src="/stactoro-logo.jpg" width="38" height="38" alt="Stactoro" style={{ objectFit: "contain" }} />
-            <span style={{ fontSize: 20, fontWeight: 800, color: "#EDEDF0", letterSpacing: "-0.02em" }}>Stactoro</span>
+          <a href="/" style={{ textDecoration: "none" }}>
+            <img src="/stactoro-logo-wide.jpg" alt="Stactoro" style={{ height: 48, width: "auto", objectFit: "contain", borderRadius: 8 }} />
           </a>
         </div>
 

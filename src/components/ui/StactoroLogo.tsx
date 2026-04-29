@@ -7,7 +7,7 @@ export function StactoroMark({ size = 36, className }: StactoroLogoProps) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/stactoro-logo.jpg"
+      src="/stactoro-icon.jpg"
       width={size}
       height={size}
       alt="Stactoro"
